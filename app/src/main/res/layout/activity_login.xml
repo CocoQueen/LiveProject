@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.coco.liveproject.ui.login.LoginActivity">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:background="@mipmap/logo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="29dp"
+            android:layout_height="31dp"
+            android:layout_margin="5dp"
+            android:background="@mipmap/acount" />
+
+        <EditText
+            android:id="@+id/mEd_user"
+            android:layout_width="213dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@null"
+            android:hint="请输入用户名" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_margin="5dp"
+        android:background="#000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="29dp"
+            android:layout_height="31dp"
+            android:layout_margin="5dp"
+            android:background="@mipmap/pass" />
+
+        <EditText
+            android:id="@+id/mEd_pass"
+            android:layout_width="213dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@null"
+            android:hint="请输入密码"
+            android:password="true" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/mBtn_login"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@mipmap/login_background"
+        android:text="登录"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/mTv_regist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="注册新用户"
+        android:textColor="@color/colorPrimary" />
+</LinearLayout>
