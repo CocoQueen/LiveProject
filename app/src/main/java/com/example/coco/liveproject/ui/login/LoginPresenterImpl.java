@@ -1,8 +1,10 @@
 package com.example.coco.liveproject.ui.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
-import android.widget.Toast;
 
+import com.example.coco.liveproject.model.ProfileHelper;
+import com.example.coco.liveproject.ui.profile.ProfileActivity;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 
@@ -37,14 +39,22 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             @Override
             public void onSuccess(Object data) {
                 view.loginSuccess();
+                //获取用户信息
+                getUserInfo();
+                loginActivity.startActivity(new Intent(loginActivity, ProfileActivity.class));
+
 
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                view.loginFailed();
-                Toast.makeText(loginActivity, ""+errMsg+"code"+errCode, Toast.LENGTH_SHORT).show();
+                view.loginFailed(errCode,errMsg);
             }
         });
+    }
+
+    //获取用户信息
+    private void getUserInfo() {
+        new ProfileHelper().getSelfProfile(loginActivity,null);
     }
 }

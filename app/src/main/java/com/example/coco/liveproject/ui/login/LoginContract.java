@@ -8,7 +8,7 @@ public interface LoginContract {
     interface LoginView {
         void loginSuccess();
 
-        void loginFailed();
+        void loginFailed(int errCode, String errMsg);
 
         void loginInfoEmpty();
 

@@ -1,8 +1,8 @@
 package com.example.coco.liveproject.ui.register;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.utils.ToastUtils;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, RegisterContract.RegisterView {
+public class RegisterActivity extends Activity implements View.OnClickListener, RegisterContract.RegisterView {
 
     private EditText mEd_use_register;
     private EditText mEd_pass_register;
@@ -26,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         initView();
         initListener();
-        initToolbar();
+//        initToolbar();//v7包错误
         initPresenter();
 
     }

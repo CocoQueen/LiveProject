@@ -1,17 +1,21 @@
 package com.example.coco.liveproject.ui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.UserProfile;
+import com.example.coco.liveproject.utils.ImageUtils;
+import com.example.coco.liveproject.utils.ToastUtils;
+import com.tencent.TIMFriendGenderType;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, ProfileContract.ProfileView {
+public class ProfileActivity extends Activity implements View.OnClickListener, ProfileContract.ProfileView {
 
     private ConstraintLayout mCon_profile;
     private ImageView mImg_profie_headImg;
@@ -34,8 +38,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initPresenter() {
-       presenter=new ProfilePresenterImpl(this);
-       presenter.getUserProfile();
+        presenter = new ProfilePresenterImpl(this);
+        presenter.getUserProfile();
     }
 
     private void initListener() {
@@ -57,9 +61,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.mCon_profile:
-                Intent intent = new Intent(this,EditProfileActivity.class);
+                Intent intent = new Intent(this, EditProfileActivity.class);
                 startActivity(intent);
                 break;
         }
@@ -67,11 +71,35 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void updateProfile(UserProfile profile) {
+        if (!TextUtils.isEmpty(profile.getProfile().getFaceUrl())) {
+            ImageUtils.getInstance().loadCircle(profile.getProfile().getFaceUrl(), mImg_profie_headImg);
+        } else {
+            ImageUtils.getInstance().loadCircle(R.mipmap.logo, mImg_profie_headImg);
+        }
+        if (!TextUtils.isEmpty(profile.getProfile().getNickName())) {
+            mTv_profile_nickname.setText(profile.getProfile().getNickName());
+        } else {
+            mTv_profile_nickname.setText("暂无");
+        }
+        if (!TextUtils.isEmpty(profile.getProfile().getIdentifier())) {
+            mTv_profile_usernum.setText("直播号：" + profile.getProfile().getIdentifier());
+        }
+        if (profile.getProfile().getGender() == TIMFriendGenderType.Male) {
+            mImg_profile_sex.setBackgroundResource(R.mipmap.male);
+        } else if (profile.getProfile().getGender() == TIMFriendGenderType.Female) {
+            mImg_profile_sex.setBackgroundResource(R.mipmap.female);
+        } else {
+            mImg_profile_sex.setImageResource(R.mipmap.ic_launcher);
+        }
+        mTv_profile_grade.setText(profile.getGrade() + "");
+        mTv_profile_fans.setText(profile.getFans() + "");
+        mTv_profile_fork.setText(profile.getFork() + "");
 
     }
 
     @Override
     public void updateProfileError() {
+        ToastUtils.show("获取信息失败");
 
     }
 }

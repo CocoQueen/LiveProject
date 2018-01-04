@@ -1,8 +1,8 @@
 package com.example.coco.liveproject.ui.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +12,7 @@ import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.ui.register.RegisterActivity;
 import com.example.coco.liveproject.utils.ToastUtils;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, LoginContract.LoginView {
+public class LoginActivity extends Activity implements View.OnClickListener, LoginContract.LoginView {
 
     private EditText mEd_pass;
     private EditText mEd_user;
@@ -69,8 +69,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void loginFailed() {
-        ToastUtils.show("登录失败");
+    public void loginFailed(int errCode, String errMsg) {
+        ToastUtils.show("登录失败"+errCode+errMsg);
     }
 
     @Override
