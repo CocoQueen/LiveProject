@@ -18,6 +18,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mEd_repass_register;
     private Button mBtn_register;
     private Toolbar toolbar;
+    private RegisterContract.RegisterPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         initView();
         initListener();
         initToolbar();
+        initPresenter();
 
+    }
+
+    private void initPresenter() {
+        this.presenter = new RegisterPresenterImpl(this);
     }
 
     private void initToolbar() {
@@ -58,7 +64,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mBtn_register:
-
+                String user = mEd_use_register.getText().toString().trim();
+                String pass = mEd_pass_register.getText().toString().trim();
+                String repass = mEd_repass_register.getText().toString().trim();
+                presenter.regist(user, pass, repass);
                 break;
         }
     }
@@ -66,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void registSuccess() {
         ToastUtils.show("注册成功");
+        finish();
     }
 
     @Override

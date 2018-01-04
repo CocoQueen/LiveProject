@@ -1,6 +1,7 @@
 package com.example.coco.liveproject.ui.login;
 
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
@@ -42,6 +43,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 view.loginFailed();
+                Toast.makeText(loginActivity, ""+errMsg+"code"+errCode, Toast.LENGTH_SHORT).show();
             }
         });
     }

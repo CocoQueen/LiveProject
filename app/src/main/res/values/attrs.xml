@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditProfileItem">
+        <attr name="itemtilte" format="string|reference" />
+        <attr name="itemtype">
+            <enum name="normal" value="101" />
+            <enum name="avatar" value="102" />
+        </attr>
+        <attr name="itemvalue" format="string|reference" />
+        <attr name="isendlinfe" format="boolean" />
+    </declare-styleable>
+</resources>

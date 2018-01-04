@@ -1,7 +1,9 @@
-package com.example.coco.liveproject;
+package com.example.coco.liveproject.ui.main;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.coco.liveproject.R;
 
 public class MainActivity extends AppCompatActivity {
 
