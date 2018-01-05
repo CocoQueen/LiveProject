@@ -7,6 +7,6 @@
             <enum name="avatar" value="102" />
         </attr>
         <attr name="itemvalue" format="string|reference" />
-        <attr name="isendlinfe" format="boolean" />
+        <attr name="isendline" format="boolean" />
     </declare-styleable>
 </resources>

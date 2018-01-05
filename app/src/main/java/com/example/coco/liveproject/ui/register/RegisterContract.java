@@ -7,7 +7,7 @@ package com.example.coco.liveproject.ui.register;
 public interface RegisterContract {
     interface RegisterView{
         void registSuccess();
-        void registError();
+        void registError(int errCode, String errMsg);
         void registInfoEmpty();
         void registInfoError();
         void registRepassError();

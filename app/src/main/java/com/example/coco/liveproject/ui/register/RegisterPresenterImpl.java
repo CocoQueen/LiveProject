@@ -45,7 +45,7 @@ public class RegisterPresenterImpl implements RegisterContract.RegisterPresenter
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                view.registError();
+                view.registError(errCode,errMsg);
             }
         });
     }

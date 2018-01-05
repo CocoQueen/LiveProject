@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.coco.liveproject.ui.profile.EditProfileActivity">
+    tools:context="com.example.coco.liveproject.ui.editprofile.EditProfileActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/mTool_mEp"
+            app:title="编辑信息"
+            app:titleMarginStart="100dp"
+            app:titleTextColor="#fff"
+            app:navigationIcon="@mipmap/left_arraw"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            />
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_headImg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="头像"
+            app:itemtype="avatar" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="昵称" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_usernum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="直播号" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_sex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="性别" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_xingzuo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:isendline="true"
+            app:itemtilte="星座" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/gray2"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:text="个人信息"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_home_town"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="家乡" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_job"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="职业" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemtilte="活跃地带" />
+
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:isendline="true"
+            app:itemtilte="个性签名" />
+
+
+    </LinearLayout>
+</ScrollView>

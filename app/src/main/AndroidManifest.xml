@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".ui.register.RegisterActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />
-        <activity android:name=".ui.profile.EditProfileActivity"></activity>
+        <activity android:name=".ui.editprofile.EditProfileActivity"></activity>
     </application>
 
 </manifest>

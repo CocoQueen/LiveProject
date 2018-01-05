@@ -1,6 +1,5 @@
 package com.example.coco.liveproject.ui.profile;
 
-import com.example.coco.liveproject.app.LiveApplication;
 import com.example.coco.liveproject.bean.UserProfile;
 import com.example.coco.liveproject.model.ProfileHelper;
 
@@ -19,10 +18,10 @@ public class ProfilePresenterImpl implements ProfileContract.ProfilePresenter {
 
     @Override
     public void getUserProfile() {
-        UserProfile profile = LiveApplication.getApp().getUserProfile();
-        if (profile != null) {
-            view.updateProfile(profile);
-        } else {
+//        UserProfile profile = LiveApplication.getApp().getUserProfile();
+//        if (profile != null) {
+//            view.updateProfile(profile);
+//        } else {
             new ProfileHelper().getSelfProfile(profileActivity, new ProfileHelper.OnProfileGet() {
                 @Override
                 public void onGet(UserProfile profile) {
@@ -36,7 +35,7 @@ public class ProfilePresenterImpl implements ProfileContract.ProfilePresenter {
 
                 }
             });
-        }
+//        }
 
     }
 }

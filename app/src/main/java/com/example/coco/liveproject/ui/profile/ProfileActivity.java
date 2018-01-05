@@ -1,9 +1,9 @@
 package com.example.coco.liveproject.ui.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.UserProfile;
+import com.example.coco.liveproject.ui.editprofile.EditProfileActivity;
 import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.tencent.TIMFriendGenderType;
 
-public class ProfileActivity extends Activity implements View.OnClickListener, ProfileContract.ProfileView {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, ProfileContract.ProfileView {
 
     private ConstraintLayout mCon_profile;
     private ImageView mImg_profie_headImg;
@@ -39,7 +40,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener, P
 
     private void initPresenter() {
         presenter = new ProfilePresenterImpl(this);
-        presenter.getUserProfile();
     }
 
     private void initListener() {
@@ -60,6 +60,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener, P
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.getUserProfile();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mCon_profile:
@@ -71,6 +77,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener, P
 
     @Override
     public void updateProfile(UserProfile profile) {
+        //更新view，设置显示信息
         if (!TextUtils.isEmpty(profile.getProfile().getFaceUrl())) {
             ImageUtils.getInstance().loadCircle(profile.getProfile().getFaceUrl(), mImg_profie_headImg);
         } else {
@@ -99,7 +106,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener, P
 
     @Override
     public void updateProfileError() {
-        ToastUtils.show("获取信息失败");
+      runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+              ToastUtils.show("获取信息失败");
+          }
+      });
 
     }
 }

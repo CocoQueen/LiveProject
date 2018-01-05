@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/mImg_right_arrow"
-        android:text="xxx"
+        android:text="   "
         android:textColor="#2e2e2e"
         android:textSize="16sp" />
 

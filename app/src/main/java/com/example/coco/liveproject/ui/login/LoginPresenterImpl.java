@@ -13,6 +13,7 @@ import com.tencent.ilivesdk.core.ILiveLoginManager;
  */
 
 public class LoginPresenterImpl implements LoginContract.LoginPresenter {
+    private static final String TAG = "LoginPresenterImpl";
         LoginContract.LoginView view;
         LoginActivity loginActivity;
 
@@ -23,6 +24,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
 
     @Override
     public void login(String user, String pass) {
+        //判空
         if (TextUtils.isEmpty(user)||TextUtils.isEmpty(pass)){
             view.loginInfoEmpty();
             return;
@@ -34,6 +36,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         loginMethod(user,pass);
     }
 
+    //真正的登陆操作
     private void loginMethod(String user,String pass) {
         ILiveLoginManager.getInstance().tlsLoginAll(user, pass, new ILiveCallBack() {
             @Override
@@ -41,6 +44,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 view.loginSuccess();
                 //获取用户信息
                 getUserInfo();
+                //登录成功后的跳转
                 loginActivity.startActivity(new Intent(loginActivity, ProfileActivity.class));
 
 

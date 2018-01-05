@@ -30,6 +30,7 @@ public class EditProfileItem extends FrameLayout {
     private TextView mTv_seprater;
     private ImageView mImg_editprofile_avatar;
     private ImageView mImg_right_arrow;
+    private String value;
 
 
     public EditProfileItem(@NonNull Context context) {
@@ -51,7 +52,7 @@ public class EditProfileItem extends FrameLayout {
         }
         if (itemtype == ItemType.TYPE_NOMAL.getValue()) {
             setType(ItemType.TYPE_NOMAL);
-            boolean isendline = typedArray.getBoolean(R.styleable.EditProfileItem_isendlinfe, false);
+            boolean isendline = typedArray.getBoolean(R.styleable.EditProfileItem_isendline, false);
             String itemvalue = typedArray.getString(R.styleable.EditProfileItem_itemvalue);
             if (!TextUtils.isEmpty(itemvalue)) {
                 mTv_editprofile_value.setText(itemvalue);
@@ -98,6 +99,10 @@ public class EditProfileItem extends FrameLayout {
         mTv_editprofile_name.setText(name);
         mTv_editprofile_value.setText(value);
 
+    }
+
+    public void setValue(String value) {
+        mTv_editprofile_value.setText(value);
     }
 
     public enum ItemType {
