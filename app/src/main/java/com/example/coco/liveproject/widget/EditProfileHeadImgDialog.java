@@ -21,7 +21,6 @@ import com.example.coco.liveproject.model.PhotoHelper;
 
 public class EditProfileHeadImgDialog implements View.OnClickListener {
     Activity activity;
-    OnEditChangedHeadImgListener listener;
     private final Dialog dialog;
     private WindowManager manager;
     private Display display;
@@ -31,16 +30,14 @@ public class EditProfileHeadImgDialog implements View.OnClickListener {
     private TextView mTv_camera;
     private LinearLayout mLin_cancle;
 
-    public EditProfileHeadImgDialog(Activity activity, OnEditChangedHeadImgListener listener) {
+    public EditProfileHeadImgDialog(Activity activity) {
         this.activity = activity;
-        this.listener = listener;
         dialog = new Dialog(activity);
         initView();
     }
 
-    public EditProfileHeadImgDialog(Activity activity, OnEditChangedHeadImgListener listener, int resId) {
+    public EditProfileHeadImgDialog(Activity activity, int resId) {
         this.activity = activity;
-        this.listener = listener;
         dialog = new Dialog(activity, resId);
         initView();
     }
@@ -95,12 +92,6 @@ public class EditProfileHeadImgDialog implements View.OnClickListener {
                 dialog.dismiss();
                 break;
         }
-    }
-
-    public interface OnEditChangedHeadImgListener {
-        void onSuccess(String value);
-
-        void onFailed();
     }
 
 

@@ -1,29 +1,40 @@
 package com.example.coco.liveproject.ui.editprofile;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.example.coco.liveproject.R;
+import com.example.coco.liveproject.app.QiNiuConfig;
 import com.example.coco.liveproject.bean.UserProfile;
 import com.example.coco.liveproject.model.PhotoHelper;
+import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.EditProfileDialog;
 import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
 import com.example.coco.liveproject.widget.EditProfileItem;
 import com.example.coco.liveproject.widget.EditProfileSexDialog;
 import com.example.coco.liveproject.widget.EditProfileNomalDialog;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
 import com.tencent.TIMCallBack;
 import com.tencent.TIMFriendGenderType;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMUserProfile;
 
+import org.json.JSONObject;
+
+import java.io.File;
+
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener, EditProfileContract.EditProfileView {
 
+    private static final String TAG = "EditProfileActivity";
     private Toolbar mTool_mEp;
     private EditProfileItem mEp_headImg;
     private EditProfileItem mEp_area;
@@ -41,11 +52,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditProfileNomalDialog areaDialog;
     private EditProfileNomalDialog signDialog;
     private EditProfileHeadImgDialog headImgDialog;
+    private SharedPreferences sp;
+    private SharedPreferences.Editor edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        sp = getSharedPreferences("isfirstenter", MODE_PRIVATE);
+        edit = sp.edit();
+        edit.putBoolean("isfirst", false);
+        edit.commit();
         initView();
         initListener();
         initPresenter();
@@ -127,17 +144,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void showHeadImgDialog() {
-        headImgDialog = new EditProfileHeadImgDialog(this, new EditProfileHeadImgDialog.OnEditChangedHeadImgListener() {
-            @Override
-            public void onSuccess(String value) {
-
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-        });
+        headImgDialog = new EditProfileHeadImgDialog(this, R.style.common_dialog_style);
         headImgDialog.show();
     }
 
@@ -285,6 +292,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             TIMFriendGenderType gender = mProfile.getGender();
             String location = mProfile.getLocation();
             String selfSignature = mProfile.getSelfSignature();
+            if (!TextUtils.isEmpty(faceUrl)) {
+                mEp_headImg.setHeadImg(faceUrl);
+            }
             if (!TextUtils.isEmpty(nickName)) {
                 mEp_nickname.setValue(nickName);
             }
@@ -335,7 +345,43 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             public void onReady(Uri uri) {
                 mEp_headImg.setHeadImg(uri);
                 headImgDialog.dismiss();
+
+                String path = uri.getPath();
+                File file = new File(path);
+                String absolutePath = file.getAbsolutePath();
+                String name = file.getName();
+                try {
+                    QiniuUploadHelper.uploadPic(absolutePath, name, new UpCompletionHandler() {
+                        @Override
+                        public void complete(String key, ResponseInfo info, JSONObject response) {
+                            if (info.isOK()) {
+                                updataNetHeadImgInfo(QiNiuConfig.HOST + key);
+                            } else {
+                                Log.e(TAG, "complete: upload fail");
+                            }
+                            Log.e(TAG, "complete: " + key + ",\r\n" + info + ",\r\n" + response);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+    }
+
+    private void updataNetHeadImgInfo(String url) {
+        TIMFriendshipManager.getInstance().setFaceUrl(url, new TIMCallBack() {
+            @Override
+            public void onError(int i, String s) {
+                updateInfoError();
+            }
+
+            @Override
+            public void onSuccess() {
+                presenter.onUpdateInfoSuccess();
+
+            }
+        });
+
     }
 }

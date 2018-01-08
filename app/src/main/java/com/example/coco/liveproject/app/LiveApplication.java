@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.coco.liveproject.bean.UserProfile;
 import com.example.coco.liveproject.model.MessageObservable;
+import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
 import com.tencent.ilivesdk.ILiveSDK;
 import com.tencent.ilivesdk.core.ILiveLog;
 import com.tencent.livesdk.ILVLiveConfig;
@@ -22,7 +23,12 @@ public class LiveApplication extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
-        initLiveSDK();
+        initLiveSDK();//初始化直播
+        initQiniuSdk();//初始化七牛
+    }
+
+    private void initQiniuSdk() {
+        QiniuUploadHelper.init(QiNiuConfig.SPACENAME, QiNiuConfig.SK, QiNiuConfig.AK);
     }
 
     private void initLiveSDK() {
