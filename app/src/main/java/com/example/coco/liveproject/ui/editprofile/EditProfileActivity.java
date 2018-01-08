@@ -1,5 +1,7 @@
 package com.example.coco.liveproject.ui.editprofile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,9 +10,13 @@ import android.view.View;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.UserProfile;
+import com.example.coco.liveproject.model.PhotoHelper;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.EditProfileDialog;
+import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
 import com.example.coco.liveproject.widget.EditProfileItem;
+import com.example.coco.liveproject.widget.EditProfileSexDialog;
+import com.example.coco.liveproject.widget.EditProfileNomalDialog;
 import com.tencent.TIMCallBack;
 import com.tencent.TIMFriendGenderType;
 import com.tencent.TIMFriendshipManager;
@@ -31,6 +37,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private EditProfileContract.EditProfilePresenter presenter;
     private EditProfileDialog editProfileDialog;
+    private EditProfileSexDialog sexDialog;
+    private EditProfileNomalDialog areaDialog;
+    private EditProfileNomalDialog signDialog;
+    private EditProfileHeadImgDialog headImgDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,23 +94,26 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             //头像
             case R.id.mEp_headImg:
+                showHeadImgDialog();
                 break;
             //昵称
             case R.id.mEp_nickname:
                 showNicknameEidtDialog();
-
                 break;
             //性别
             case R.id.mEp_sex:
+                showSexEditDialog();
                 break;
             //活跃地带
             case R.id.mEp_area:
+                showAreaEditDialog();
                 break;
             //家乡
             case R.id.mEp_home_town:
                 break;
             //个性签名
             case R.id.mEp_sign:
+                showSignEditDialog();
                 break;
             //星座
             case R.id.mEp_xingzuo:
@@ -111,6 +124,121 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         }
 
+    }
+
+    private void showHeadImgDialog() {
+        headImgDialog = new EditProfileHeadImgDialog(this, new EditProfileHeadImgDialog.OnEditChangedHeadImgListener() {
+            @Override
+            public void onSuccess(String value) {
+
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
+        headImgDialog.show();
+    }
+
+    private void showSignEditDialog() {
+        signDialog = new EditProfileNomalDialog(this, new EditProfileNomalDialog.OnProfileNomalChangedListener() {
+            @Override
+            public void onChangeSucess(String value) {
+                TIMFriendshipManager.getInstance().setSelfSignature(value, new TIMCallBack() {
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        signDialog.hide();
+                        signDialog = null;
+                        presenter.onUpdateInfoSuccess();
+
+                    }
+                });
+            }
+
+            @Override
+            public void onChangeError() {
+
+            }
+        });
+        signDialog.setTitleAndIcon("请输入您的个性签名", R.mipmap.logo);
+        signDialog.show();
+    }
+
+    private void showAreaEditDialog() {
+        areaDialog = new EditProfileNomalDialog(this, new EditProfileNomalDialog.OnProfileNomalChangedListener() {
+            @Override
+            public void onChangeSucess(String value) {
+                TIMFriendshipManager.getInstance().setLocation(value, new TIMCallBack() {
+                    @Override
+                    public void onError(int i, String s) {
+                        updateInfoError();
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        areaDialog.hide();
+                        areaDialog = null;
+                        presenter.onUpdateInfoSuccess();
+
+                    }
+                });
+            }
+
+            @Override
+            public void onChangeError() {
+                areaDialog.hide();
+                areaDialog = null;
+                updateInfoError();
+
+            }
+        });
+        areaDialog.setTitleAndIcon("请输入您的活跃地带", R.mipmap.logo);
+        areaDialog.show();
+    }
+
+    private void showSexEditDialog() {
+        sexDialog = new EditProfileSexDialog(new EditProfileSexDialog.OnProfileSexChangedListener() {
+            private TIMFriendGenderType type;
+
+            @Override
+            public void onChangedSuccess(String value) {
+                if ("男".equals(value)) {
+                    type = TIMFriendGenderType.Male;
+                } else if ("女".equals(value)) {
+                    type = TIMFriendGenderType.Female;
+                } else {
+                    type = TIMFriendGenderType.Unknow;
+                }
+                TIMFriendshipManager.getInstance().setGender(type, new TIMCallBack() {
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        sexDialog.hide();
+                        sexDialog = null;
+                        presenter.onUpdateInfoSuccess();
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onChangedError() {
+
+            }
+        }, this);
+        sexDialog.setTitleAndIcon("请选择您的性别：", R.mipmap.logo);
+        sexDialog.show();
     }
 
     private void showNicknameEidtDialog() {
@@ -138,7 +266,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onEmpty() {
                 editProfileDialog.dismiss();
-                editProfileDialog=null;
+                editProfileDialog = null;
                 updateInfoError();
 
             }
@@ -197,5 +325,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         ToastUtils.show("信息更新成功");
         presenter.getUserInfo();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PhotoHelper.getInstance(this).onActivityResult(requestCode, resultCode, data, new PhotoHelper.onEditHeadImgListener() {
+            @Override
+            public void onReady(Uri uri) {
+                mEp_headImg.setHeadImg(uri);
+                headImgDialog.dismiss();
+            }
+        });
     }
 }

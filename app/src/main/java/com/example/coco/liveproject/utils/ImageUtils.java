@@ -1,5 +1,6 @@
 package com.example.coco.liveproject.utils;
 
+import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +29,15 @@ public class ImageUtils {
         Glide.with(LiveApplication.getApp())
                 .load(path)
                 .apply(RequestOptions.circleCropTransform())
+                .into(mImg);
+    }
+
+    public void loadCircle(Uri uri, ImageView mImg) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.circleCrop();
+        Glide.with(LiveApplication.getApp())
+                .load(uri)
+                .apply(requestOptions)
                 .into(mImg);
     }
 }

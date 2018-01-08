@@ -2,6 +2,7 @@ package com.example.coco.liveproject.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.coco.liveproject.R;
+import com.example.coco.liveproject.utils.ImageUtils;
 
 /**
  * Created by coco on 2018/1/3.
@@ -31,6 +33,7 @@ public class EditProfileItem extends FrameLayout {
     private ImageView mImg_editprofile_avatar;
     private ImageView mImg_right_arrow;
     private String value;
+    private Uri headImg;
 
 
     public EditProfileItem(@NonNull Context context) {
@@ -103,6 +106,13 @@ public class EditProfileItem extends FrameLayout {
 
     public void setValue(String value) {
         mTv_editprofile_value.setText(value);
+    }
+
+    public void setHeadImg(Uri headImg) {
+        ImageUtils.getInstance().loadCircle(headImg,mImg_editprofile_avatar);
+    }
+    public void setHeadImg(String headImg) {
+        ImageUtils.getInstance().loadCircle(headImg,mImg_editprofile_avatar);
     }
 
     public enum ItemType {
