@@ -30,6 +30,9 @@ public class PhotoHelper {
     private Uri createImgUri;
     private Uri outUri;
 
+    public enum CropType{
+        HeadImg,Cover;
+    }
     public interface onEditHeadImgListener {
         void onReady(Uri uri);
     }

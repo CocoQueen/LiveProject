@@ -22,7 +22,9 @@
         </activity>
         <activity android:name=".ui.register.RegisterActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />
-        <activity android:name=".ui.editprofile.EditProfileActivity"></activity>
+        <activity android:name=".ui.editprofile.EditProfileActivity" />
+        <activity android:name=".ui.create.CreateLiveActivity" />
+        <activity android:name=".ui.host.HostLiveActivity"></activity>
     </application>
 
 </manifest>

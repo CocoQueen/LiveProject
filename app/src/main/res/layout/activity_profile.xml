@@ -10,14 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/colorPrimary"
             app:title="我"
             app:titleMarginStart="180dp"
-            app:titleTextColor="#fff"
-            android:background="@color/colorPrimary"
-            />
+            app:titleTextColor="#fff" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/mCon_profile"
@@ -170,6 +170,13 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/mBtn_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="发起直播" />
     </LinearLayout>
 
 </ScrollView>

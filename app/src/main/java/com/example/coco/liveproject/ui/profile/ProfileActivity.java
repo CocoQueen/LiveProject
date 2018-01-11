@@ -6,11 +6,13 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.UserProfile;
+import com.example.coco.liveproject.ui.create.CreateLiveActivity;
 import com.example.coco.liveproject.ui.editprofile.EditProfileActivity;
 import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
@@ -55,6 +57,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mTv_profile_grade = findViewById(R.id.mTv_profile_grade);
         mTv_profile_usernum = findViewById(R.id.mTv_profile_usernum);
         mImg_profile_sex = findViewById(R.id.mImg_profile_sex);
+
+        //TODO
+        Button button =findViewById(R.id.mBtn_create);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this,CreateLiveActivity.class));
+            }
+        });
 
 
     }

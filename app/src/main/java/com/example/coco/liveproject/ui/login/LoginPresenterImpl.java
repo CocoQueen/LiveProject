@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.example.coco.liveproject.model.ProfileHelper;
-import com.example.coco.liveproject.ui.main.MainActivity;
+import com.example.coco.liveproject.ui.profile.ProfileActivity;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 
@@ -45,7 +45,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 //获取用户信息
                 getUserInfo();
                 //登录成功后的跳转
-                loginActivity.startActivity(new Intent(loginActivity, MainActivity.class));
+                loginActivity.startActivity(new Intent(loginActivity, ProfileActivity.class));
 
 
             }

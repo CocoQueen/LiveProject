@@ -52,9 +52,9 @@ public class MainActivity extends FragmentActivity {
         if ("home".equals(str)) {
             mImg_tabspec.setBackgroundResource(R.mipmap.logo);
         } else if ("mine".equals(str)) {
-            mImg_tabspec.setBackgroundResource(R.mipmap.logo);
+            mImg_tabspec.setBackgroundResource(R.mipmap.female);
         } else if ("live".equals(str)) {
-            mImg_tabspec.setBackgroundResource(R.mipmap.logo);
+            mImg_tabspec.setBackgroundResource(R.mipmap.male);
         }
         return view;
     }
