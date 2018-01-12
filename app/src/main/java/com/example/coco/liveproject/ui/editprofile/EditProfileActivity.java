@@ -9,12 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.app.QiNiuConfig;
 import com.example.coco.liveproject.bean.UserProfile;
 import com.example.coco.liveproject.model.PhotoHelper;
 import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
+import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.EditProfileDialog;
 import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
@@ -36,7 +39,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private static final String TAG = "EditProfileActivity";
     private Toolbar mTool_mEp;
-    private EditProfileItem mEp_headImg;
+    private ImageView mEp_headImg;
     private EditProfileItem mEp_area;
     private EditProfileItem mEp_home_town;
     private EditProfileItem mEp_nickname;
@@ -54,6 +57,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditProfileHeadImgDialog headImgDialog;
     private SharedPreferences sp;
     private SharedPreferences.Editor edit;
+    private RelativeLayout mRl_edit_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +85,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 finish();
             }
         });
-        mEp_headImg.setOnClickListener(this);
+        mRl_edit_profile.setOnClickListener(this);
         mEp_area.setOnClickListener(this);
         mEp_home_town.setOnClickListener(this);
         mEp_job.setOnClickListener(this);
@@ -103,6 +107,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         mEp_sex = findViewById(R.id.mEp_sex);
         mEp_xingzuo = findViewById(R.id.mEp_xingzuo);
         mEp_job = findViewById(R.id.mEp_job);
+        mRl_edit_profile = findViewById(R.id.mRl_edit_Profile);
 
     }
 
@@ -110,7 +115,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             //头像
-            case R.id.mEp_headImg:
+            case R.id.mRl_edit_Profile:
                 showHeadImgDialog();
                 break;
             //昵称
@@ -293,7 +298,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             String location = mProfile.getLocation();
             String selfSignature = mProfile.getSelfSignature();
             if (!TextUtils.isEmpty(faceUrl)) {
-                mEp_headImg.setHeadImg(faceUrl);
+                mEp_headImg.setImageURI(Uri.parse(faceUrl));
             }
             if (!TextUtils.isEmpty(nickName)) {
                 mEp_nickname.setValue(nickName);
@@ -340,10 +345,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        PhotoHelper.getInstance(this).onActivityResult(requestCode, resultCode, data, new PhotoHelper.onEditHeadImgListener() {
+        PhotoHelper.getInstance(this).onActivityResult(requestCode, resultCode, data, PhotoHelper.CropType.HeadImg, new PhotoHelper.onEditHeadImgListener() {
             @Override
             public void onReady(Uri uri) {
-                mEp_headImg.setHeadImg(uri);
+//                mEp_headImg.setHeadImg(uri);
+                ImageUtils.getInstance().loadCircle(uri,mEp_headImg);
                 headImgDialog.dismiss();
 
                 String path = uri.getPath();

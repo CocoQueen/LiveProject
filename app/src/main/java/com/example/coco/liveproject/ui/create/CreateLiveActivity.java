@@ -1,6 +1,7 @@
 package com.example.coco.liveproject.ui.create;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,8 +10,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.coco.liveproject.R;
+import com.example.coco.liveproject.app.QiNiuConfig;
+import com.example.coco.liveproject.model.PhotoHelper;
+import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
+import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+
+import org.json.JSONObject;
+
+import java.io.File;
 
 public class CreateLiveActivity extends AppCompatActivity implements CreateLiveContract.CreateLiveView, View.OnClickListener {
 
@@ -83,6 +94,31 @@ public class CreateLiveActivity extends AppCompatActivity implements CreateLiveC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        PhotoHelper.getInstance(this).onActivityResult(requestCode,resultCode,data);
+        PhotoHelper.getInstance(this).onActivityResult(requestCode, resultCode, data, PhotoHelper.CropType.Cover, new PhotoHelper.onEditHeadImgListener() {
+            @Override
+            public void onReady(Uri outUri) {
+                mImg_live_cover.setVisibility(View.VISIBLE);
+                mImg_live_cover.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                ImageUtils.getInstance().loadPic(outUri,mImg_live_cover);
+                picDialog.dismiss();
+                String path = outUri.getPath();
+                File file = new File(path);
+                if (!file.exists()){
+                    ToastUtils.show("获取本地图片失败");
+                }else {
+                    try {
+                        QiniuUploadHelper.uploadPic(file.getAbsolutePath(), file.getName(), new UpCompletionHandler() {
+                            @Override
+                            public void complete(String key, ResponseInfo info, JSONObject response) {
+                                coverUrl = QiNiuConfig.HOST + key;
+                                ToastUtils.show("封面设置成功");
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }

@@ -27,14 +27,14 @@ public class PhotoHelper {
 
     static PhotoHelper helper;
     Activity activity;
-    private Uri createImgUri;
+    private Uri createAlbumUri;
     private Uri outUri;
 
     public enum CropType{
         HeadImg,Cover;
     }
     public interface onEditHeadImgListener {
-        void onReady(Uri uri);
+        void onReady(Uri outUri);
     }
 
     public PhotoHelper(Activity activity) {
@@ -49,7 +49,7 @@ public class PhotoHelper {
     }
 
     //转换content：//uri
-    public Uri getImgUriContent(Uri uri) {
+    public Uri getImgContentUri(Uri uri) {
         String filePath = uri.getPath();
         Cursor cursor = LiveApplication.getApp().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Images.Media._ID},
@@ -67,7 +67,7 @@ public class PhotoHelper {
     }
 
     //创建拍照后的的输出路径
-    public Uri creatOutPath(UserProfile profile) {
+    public Uri createAlbumUri(UserProfile profile) {
         String dirPath = Environment.getExternalStorageDirectory() + "/" + LiveApplication.getApp().getApplicationInfo().packageName;
         File file = new File(dirPath);
         if (!file.exists()) {
@@ -84,8 +84,8 @@ public class PhotoHelper {
         if (imgFile.exists()) {
             imgFile.delete();
         }
-        createImgUri = Uri.fromFile(imgFile);
-        return createImgUri;
+        createAlbumUri= Uri.fromFile(imgFile);
+        return createAlbumUri;
 
     }
 
@@ -134,7 +134,7 @@ public class PhotoHelper {
             if ("content".equals(scheme)) {
                 rightUri = uri;
             } else {
-                rightUri = getImgUriContent(uri);
+                rightUri = getImgContentUri(uri);
             }
 
         }
@@ -142,12 +142,12 @@ public class PhotoHelper {
     }
 
     public Uri getImgUri() {
-        return createImgUri;
+        return createAlbumUri;
     }
 
     //开启跳转相机的方法
     public void startCameraIntent() {
-        Uri cameraFileUri = creatOutPath(LiveApplication.getApp().getUserProfile());
+        Uri cameraFileUri = createAlbumUri(LiveApplication.getApp().getUserProfile());
         int sdkInt = Build.VERSION.SDK_INT;
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (sdkInt < 24) {
@@ -155,7 +155,7 @@ public class PhotoHelper {
         } else {
             ContentValues values = new ContentValues(1);
             values.put(MediaStore.Images.Media.DATA, cameraFileUri.getPath());
-            Uri uri = getImgUriContent(cameraFileUri);
+            Uri uri = getImgContentUri(cameraFileUri);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         }
         activity.startActivityForResult(intent, REQUEST_TAKE_CAMERA);
@@ -167,7 +167,7 @@ public class PhotoHelper {
         activity.startActivityForResult(intent, REQUEST_SELECT_PHOTO);
     }
 
-    private void startCrop(Intent data) {
+    private void startCrop(Intent data,CropType cropType) {
         Uri uri;
         if (data == null) {
             uri = getImgUri();
@@ -177,10 +177,17 @@ public class PhotoHelper {
         //创建裁剪之后那个uri
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 500);
-        intent.putExtra("aspectY", 500);
-        intent.putExtra("outputX", 500);
-        intent.putExtra("outputY", 500);
+        if (cropType==CropType.HeadImg){
+        intent.putExtra("aspectX", 800);
+        intent.putExtra("aspectY", 800);
+        intent.putExtra("outputX", 800);
+        intent.putExtra("outputY", 800);
+        }else if (cropType==CropType.Cover){
+            intent.putExtra("aspectX", 800);
+            intent.putExtra("aspectY", 500);
+            intent.putExtra("outputX", 800);
+            intent.putExtra("outputY", 500);
+        }
         // 设置为true直接返回bitmap,这里不做输出，只需要指定我们自己定义uri即可
         intent.putExtra("return-data", false);
         //设置输出图片格式
@@ -197,14 +204,14 @@ public class PhotoHelper {
 
     }
 
-    public void onActivityResult(int requestcode, int resultcode, Intent data, onEditHeadImgListener listener) {
+    public void onActivityResult(int requestcode, int resultcode, Intent data,CropType cropType ,onEditHeadImgListener listener) {
         if (requestcode == REQUEST_SELECT_PHOTO) {
             if (resultcode == Activity.RESULT_OK) {
-                startCrop(data);
+                startCrop(data,cropType);
             }
         } else if (requestcode == REQUEST_TAKE_CAMERA) {
             if (resultcode == Activity.RESULT_OK) {
-                startCrop(data);
+                startCrop(data,cropType);
             }
         } else if (requestcode == REQUEST_CROP) {
             if (resultcode == Activity.RESULT_OK) {

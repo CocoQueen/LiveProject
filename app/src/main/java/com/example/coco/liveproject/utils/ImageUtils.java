@@ -40,4 +40,24 @@ public class ImageUtils {
                 .apply(requestOptions)
                 .into(mImg);
     }
+
+    public void loadPic(Uri uri, ImageView mImg) {
+        Glide.with(LiveApplication.getApp())
+                .load(uri)
+                .into(mImg);
+    }
+
+    public void loadPic(int resId, ImageView mImg) {
+        Glide.with(LiveApplication.getApp())
+                .load(resId)
+                .into(mImg);
+    }
+
+    public void loadPic(String url, ImageView mImg) {
+        Glide.with(LiveApplication.getApp())
+                .load(url)
+                .into(mImg);
+    }
+
+
 }
