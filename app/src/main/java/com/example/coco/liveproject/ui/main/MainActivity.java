@@ -1,5 +1,6 @@
 package com.example.coco.liveproject.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 
 import com.example.coco.liveproject.R;
+import com.example.coco.liveproject.ui.create.CreateLiveActivity;
 import com.example.coco.liveproject.ui.home.HomeFragment;
 import com.example.coco.liveproject.ui.mine.MineFragment;
 
@@ -28,8 +30,19 @@ public class MainActivity extends FragmentActivity {
 
         fm = getSupportFragmentManager();
         initView();
+        upDataView();
         initToolbar("");
 
+    }
+
+    private void upDataView() {
+//        Intent intent = getIntent();
+//        if (intent!=null){
+//            String extra = intent.getStringExtra("from");
+//            if ("profileActivity".equals(extra)){
+//                mTabhost.setCurrentTab(2);
+//            }
+//        }
     }
 
     private void initView() {
@@ -40,10 +53,19 @@ public class MainActivity extends FragmentActivity {
         TabHost.TabSpec tabSpec_home = mTabhost.newTabSpec("home").setIndicator(getView("home"));
         TabHost.TabSpec tabSpec_create = mTabhost.newTabSpec("create").setIndicator(getView("create"));
         TabHost.TabSpec tabSpec_mine = mTabhost.newTabSpec("mine").setIndicator(getView("mine"));
+
         mTabhost.addTab(tabSpec_home, HomeFragment.class, null);
-        mTabhost.addTab(tabSpec_create, HomeFragment.class, null);
+        mTabhost.addTab(tabSpec_create,null, null);
         mTabhost.addTab(tabSpec_mine, MineFragment.class, null);
+
         mTabhost.getTabWidget().setDividerDrawable(R.color.transprant);
+
+        mTabhost.getTabWidget().getChildTabViewAt(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateLiveActivity.class));
+            }
+        });
     }
 
     private View getView(String str) {
@@ -51,10 +73,10 @@ public class MainActivity extends FragmentActivity {
         ImageView mImg_tabspec = view.findViewById(R.id.mImg_tabspec);
         if ("home".equals(str)) {
             mImg_tabspec.setBackgroundResource(R.mipmap.logo);
-        } else if ("mine".equals(str)) {
-            mImg_tabspec.setBackgroundResource(R.mipmap.female);
-        } else if ("live".equals(str)) {
+        }else if ("create".equals(str)) {
             mImg_tabspec.setBackgroundResource(R.mipmap.male);
+        } else if ("mine".equals(str)) {
+            mImg_tabspec.setBackgroundResource(R.mipmap.pass);
         }
         return view;
     }

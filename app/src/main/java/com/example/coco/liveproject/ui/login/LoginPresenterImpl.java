@@ -1,10 +1,12 @@
 package com.example.coco.liveproject.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.example.coco.liveproject.model.ProfileHelper;
-import com.example.coco.liveproject.ui.profile.ProfileActivity;
+import com.example.coco.liveproject.ui.main.MainActivity;
 import com.tencent.ilivesdk.ILiveCallBack;
 import com.tencent.ilivesdk.core.ILiveLoginManager;
 
@@ -45,7 +47,18 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 //获取用户信息
                 getUserInfo();
                 //登录成功后的跳转
-                loginActivity.startActivity(new Intent(loginActivity, ProfileActivity.class));
+
+                SharedPreferences sp = loginActivity.getSharedPreferences("isfirstenter", Context.MODE_PRIVATE);
+//                boolean isfirst = sp.getBoolean("isfirst", true);
+                Intent intent;
+//                if (isfirst){
+//                     intent= new Intent(loginActivity, ProfileActivity.class);
+//                    ToastUtils.show("请设置您的个人信息");
+//                }else {
+                    intent= new Intent(loginActivity, MainActivity.class);
+//                }
+
+                loginActivity.startActivity(intent);
 
 
             }

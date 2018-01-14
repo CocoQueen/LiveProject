@@ -1,7 +1,6 @@
 package com.example.coco.liveproject.ui.editprofile;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,21 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.app.QiNiuConfig;
 import com.example.coco.liveproject.bean.UserProfile;
 import com.example.coco.liveproject.model.PhotoHelper;
 import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
-import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.EditProfileDialog;
 import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
 import com.example.coco.liveproject.widget.EditProfileItem;
-import com.example.coco.liveproject.widget.EditProfileSexDialog;
 import com.example.coco.liveproject.widget.EditProfileNomalDialog;
+import com.example.coco.liveproject.widget.EditProfileSexDialog;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.tencent.TIMCallBack;
@@ -39,7 +35,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private static final String TAG = "EditProfileActivity";
     private Toolbar mTool_mEp;
-    private ImageView mEp_headImg;
+    private EditProfileItem mEp_headImg;
     private EditProfileItem mEp_area;
     private EditProfileItem mEp_home_town;
     private EditProfileItem mEp_nickname;
@@ -55,18 +51,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private EditProfileNomalDialog areaDialog;
     private EditProfileNomalDialog signDialog;
     private EditProfileHeadImgDialog headImgDialog;
-    private SharedPreferences sp;
-    private SharedPreferences.Editor edit;
-    private RelativeLayout mRl_edit_profile;
+//    private SharedPreferences sp;
+//    private SharedPreferences.Editor edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        sp = getSharedPreferences("isfirstenter", MODE_PRIVATE);
-        edit = sp.edit();
-        edit.putBoolean("isfirst", false);
-        edit.commit();
+//        sp = getSharedPreferences("isfirstenter", MODE_PRIVATE);
+//        edit = sp.edit();
+//        edit.putBoolean("isfirst", false);
+//        edit.commit();
         initView();
         initListener();
         initPresenter();
@@ -85,7 +80,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 finish();
             }
         });
-        mRl_edit_profile.setOnClickListener(this);
+        mEp_headImg.setOnClickListener(this);
         mEp_area.setOnClickListener(this);
         mEp_home_town.setOnClickListener(this);
         mEp_job.setOnClickListener(this);
@@ -107,7 +102,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         mEp_sex = findViewById(R.id.mEp_sex);
         mEp_xingzuo = findViewById(R.id.mEp_xingzuo);
         mEp_job = findViewById(R.id.mEp_job);
-        mRl_edit_profile = findViewById(R.id.mRl_edit_Profile);
 
     }
 
@@ -115,7 +109,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             //头像
-            case R.id.mRl_edit_Profile:
+            case R.id.mEp_headImg:
                 showHeadImgDialog();
                 break;
             //昵称
@@ -298,7 +292,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             String location = mProfile.getLocation();
             String selfSignature = mProfile.getSelfSignature();
             if (!TextUtils.isEmpty(faceUrl)) {
-                mEp_headImg.setImageURI(Uri.parse(faceUrl));
+                mEp_headImg.setHeadImg(faceUrl);
             }
             if (!TextUtils.isEmpty(nickName)) {
                 mEp_nickname.setValue(nickName);
@@ -348,8 +342,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         PhotoHelper.getInstance(this).onActivityResult(requestCode, resultCode, data, PhotoHelper.CropType.HeadImg, new PhotoHelper.onEditHeadImgListener() {
             @Override
             public void onReady(Uri uri) {
-//                mEp_headImg.setHeadImg(uri);
-                ImageUtils.getInstance().loadCircle(uri,mEp_headImg);
+                mEp_headImg.setHeadImg(uri);
                 headImgDialog.dismiss();
 
                 String path = uri.getPath();

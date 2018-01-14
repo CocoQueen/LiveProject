@@ -24,7 +24,8 @@
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity android:name=".ui.editprofile.EditProfileActivity" />
         <activity android:name=".ui.create.CreateLiveActivity" />
-        <activity android:name=".ui.host.HostLiveActivity"></activity>
+        <activity android:name=".ui.host.HostLiveActivity" />
+        <activity android:name=".ui.watcher.WatcherActivity"></activity>
     </application>
 
 </manifest>

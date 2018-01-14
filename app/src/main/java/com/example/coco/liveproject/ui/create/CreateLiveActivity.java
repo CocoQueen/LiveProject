@@ -98,7 +98,7 @@ public class CreateLiveActivity extends AppCompatActivity implements CreateLiveC
             @Override
             public void onReady(Uri outUri) {
                 mImg_live_cover.setVisibility(View.VISIBLE);
-                mImg_live_cover.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                mImg_live_cover.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ImageUtils.getInstance().loadPic(outUri,mImg_live_cover);
                 picDialog.dismiss();
                 String path = outUri.getPath();

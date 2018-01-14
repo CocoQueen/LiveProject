@@ -20,40 +20,12 @@
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
             />
-
-        <RelativeLayout
-            android:id="@+id/mRl_edit_Profile"
+        <com.example.coco.liveproject.widget.EditProfileItem
+            android:id="@+id/mEp_headImg"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#fff"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="12dp"
-                android:textColor="#2e2e2e"
-                android:textSize="18sp"
-                android:text="头像"
-                />
-            <ImageView
-                android:id="@+id/mEp_headImg"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:background="@mipmap/logo"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="#4d4c4c" />
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            app:itemtilte="头像"
+            app:itemtype="avatar" />
 
         <com.example.coco.liveproject.widget.EditProfileItem
             android:id="@+id/mEp_nickname"
