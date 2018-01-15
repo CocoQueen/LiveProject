@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class HomePresenterImpl implements HomeContract.HomePresenter {
     HomeContract.HomeView view;
     HomeFragment fragment;
-    ArrayList<HomeInfo.DataBean> list;
+    private ArrayList<HomeInfo.DataBean> list;
 
     public HomePresenterImpl(HomeContract.HomeView view) {
         this.view = view;
@@ -32,7 +32,7 @@ public class HomePresenterImpl implements HomeContract.HomePresenter {
 
         HashMap<String, String> map = new HashMap<>();
         map.put("action", "getList");
-        map.put("pageInfex", page + "");
+        map.put("pageIndex", page + "");
 
         OkHttpHelper.getInstance().postObject(url, map, new BaseOnRequestComplete<HomeInfo>() {
 

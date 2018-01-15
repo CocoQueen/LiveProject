@@ -34,6 +34,9 @@ public class HomeInfoAdapter extends RecyclerView.Adapter<HomeInfoAdapter.HomeIn
     @Override
     public HomeInfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         view = LayoutInflater.from(context).inflate(R.layout.home_info_adapter, null, false);
+        int offset = context.getResources().getDimensionPixelOffset(R.dimen.item_height2);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, offset);
+        view.setLayoutParams(layoutParams);
         return new HomeInfoViewHolder(view);
     }
 
@@ -46,9 +49,9 @@ public class HomeInfoAdapter extends RecyclerView.Adapter<HomeInfoAdapter.HomeIn
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener!=null){
+                if (listener != null) {
                     listener.onHomeInfoListener(bean);
-                    ToastUtils.show("进入"+bean.getUserName()+"的房间");
+                    ToastUtils.show("进入" + bean.getUserName() + "的房间");
                 }
             }
         });
@@ -77,6 +80,7 @@ public class HomeInfoAdapter extends RecyclerView.Adapter<HomeInfoAdapter.HomeIn
             mTv_title_adapter.setText(bean.getLiveTitle());
             mTv_live_id_adapter.setText(bean.getUserId());
             mTv_watcher_num_adapter.setText(bean.getWatcherNums() + "");
+            mImg_bg_adapter.setScaleType(ImageView.ScaleType.CENTER_CROP);
             ImageUtils.getInstance().loadPic(bean.getLiveCover(), mImg_bg_adapter);
         }
     }

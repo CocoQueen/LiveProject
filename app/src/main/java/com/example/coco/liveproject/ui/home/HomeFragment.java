@@ -23,7 +23,6 @@ public class HomeFragment extends Fragment implements HomeContract.HomeView {
     MainActivity activity;
     public SwipeRefreshLayout srl;
     HomeContract.HomePresenter presenter;
-    int page;
     private RecyclerView mRv;
 
     @Nullable
@@ -85,6 +84,12 @@ public class HomeFragment extends Fragment implements HomeContract.HomeView {
             ToastUtils.show("数据为空");
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData(0);
     }
 }
 
