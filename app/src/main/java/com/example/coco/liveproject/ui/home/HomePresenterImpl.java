@@ -53,6 +53,7 @@ public class HomePresenterImpl implements HomeContract.HomePresenter {
                         }
                     });
                     view.setHomeInfoAdapter(adapter);
+
                 } else {
                     onEmpty();
                 }

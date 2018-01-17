@@ -58,12 +58,14 @@ public class CreateLivePresenterImpl implements CreateLiveContract.CreateLivePre
         OkHttpHelper.getInstance().postObject(AppConstant.HOST,map,new BaseOnRequestComplete<HostRoomInfo>(){
 
             @Override
-            public void onSuccess(HostRoomInfo hostRoomInfo) {
-                HostRoomInfo.DataBean data = hostRoomInfo.getData();
-                if (data!=null){
-                    int roomId = data.getRoomId();
+            public void onSuccess(HostRoomInfo info) {
+//                HostRoomInfo.DataBean data = hostRoomInfo.getData();
+                if (info!=null){
+                    int roomId = info.getData().getRoomId();
                     if (roomId!=0){
-                        activity.startActivity(new Intent(activity, HostLiveActivity.class));
+                        Intent intent = new Intent(activity, HostLiveActivity.class);
+                        intent.putExtra("roomId",roomId);
+                        activity.startActivity(intent);
                     }
                 }else {
                     onEmpty();

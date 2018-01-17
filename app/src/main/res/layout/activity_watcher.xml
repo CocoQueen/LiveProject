@@ -5,9 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.coco.liveproject.ui.watcher.WatcherActivity">
+
     <com.tencent.ilivesdk.view.AVRootView
         android:id="@+id/mAv_watcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.example.coco.liveproject.widget.BottomSwichLayout
+        android:id="@+id/bsl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <com.example.coco.liveproject.widget.BottomChatLayout
+        android:id="@+id/bcl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <com.example.coco.liveproject.widget.LiveMsgListView
+        android:id="@+id/lmlv"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_above="@id/bsl" />
 
 </RelativeLayout>

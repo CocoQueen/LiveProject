@@ -11,7 +11,8 @@ public interface HostLiveContract {
     }
 
     interface HostLivePresenter {
-        void createHost();
+        void createHost(int roomId);
+        void quitHost(int roomId);
 
     }
 }
