@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.coco.liveproject.widget.HeightConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.coco.liveproject.widget.HeightRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mHcl_host_live"
@@ -11,13 +11,7 @@
     <com.tencent.ilivesdk.view.AVRootView
         android:id="@+id/mAv_room"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_height="match_parent" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mTool_host"
@@ -28,32 +22,31 @@
 
 
     <com.example.coco.liveproject.widget.BottomSwichLayout
+        android:id="@+id/mBsl_host_live"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/mBsl_host_live"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+
         />
+
     <com.example.coco.liveproject.widget.BottomChatLayout
+        android:id="@+id/mBcl_host_live"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/mBcl_host_live"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+       android:layout_alignParentBottom="true"
+
         />
 
     <com.example.coco.liveproject.widget.LiveMsgListView
         android:id="@+id/mLmlv_host_live"
         android:layout_width="200dp"
         android:layout_height="150dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/mBcl_host_live"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</com.example.coco.liveproject.widget.HeightConstraintLayout>
+        android:layout_above="@id/mBcl_host_live" />
+
+    <com.example.coco.liveproject.widget.DanmuView
+        android:id="@+id/mDv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_above="@id/mLmlv_host_live" />
+</com.example.coco.liveproject.widget.HeightRelativeLayout>

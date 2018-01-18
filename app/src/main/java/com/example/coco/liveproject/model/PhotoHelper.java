@@ -29,6 +29,9 @@ public class PhotoHelper {
     Activity activity;
     private Uri createAlbumUri;
     private Uri outUri;
+    private String dirPath;
+    private File imgFile;
+    private File file;
 
     public enum CropType{
         HeadImg,Cover;
@@ -69,7 +72,7 @@ public class PhotoHelper {
     //创建拍照后的的输出路径
     public Uri createAlbumUri(UserProfile profile) {
         String dirPath = Environment.getExternalStorageDirectory() + "/" + LiveApplication.getApp().getApplicationInfo().packageName;
-        File file = new File(dirPath);
+        file = new File(dirPath);
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -91,7 +94,7 @@ public class PhotoHelper {
 
     //通过id和包名生成裁剪输出文件
     public Uri createCropUri(UserProfile profile) {
-        String dirPath = Environment.getExternalStorageDirectory() + "/" + LiveApplication.getApp().getApplicationInfo().packageName;
+        dirPath = Environment.getExternalStorageDirectory() + "/" + LiveApplication.getApp().getApplicationInfo().packageName;
         File file = new File(dirPath);
         if (!file.exists()) {
             file.mkdirs();
@@ -157,6 +160,7 @@ public class PhotoHelper {
             values.put(MediaStore.Images.Media.DATA, cameraFileUri.getPath());
             Uri uri = getImgContentUri(cameraFileUri);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         activity.startActivityForResult(intent, REQUEST_TAKE_CAMERA);
     }

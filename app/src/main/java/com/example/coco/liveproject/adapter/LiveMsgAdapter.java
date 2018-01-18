@@ -33,7 +33,6 @@ public class LiveMsgAdapter extends BaseAdapter {
         if (list != null) {
             return list.size();
         } else {
-
             return 0;
         }
     }

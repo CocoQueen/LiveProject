@@ -3,8 +3,11 @@ package com.example.coco.liveproject.ui.watcher;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.example.coco.liveproject.R;
+import com.example.coco.liveproject.app.LiveApplication;
+import com.example.coco.liveproject.bean.DMMsgInfo;
 import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
@@ -13,6 +16,8 @@ import com.example.coco.liveproject.model.live.DemoFunc;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.BottomChatLayout;
 import com.example.coco.liveproject.widget.BottomSwichLayout;
+import com.example.coco.liveproject.widget.DanmuView;
+import com.example.coco.liveproject.widget.HeightRelativeLayout;
 import com.example.coco.liveproject.widget.LiveMsgListView;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
@@ -38,6 +43,8 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
     private BottomChatLayout bcl;
     private LiveMsgListView lmlv;
     ArrayList<LiveMsgInfo> list = new ArrayList<>();
+    private HeightRelativeLayout mHrl;
+    DanmuView danmuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +53,17 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
         MessageObservable.getInstance().addObserver(this);
         initView();
+        setDefaultStatus();
         lmlv.setData(list);
         initListener();
         initRootView();
         getSomething();
+    }
+
+    private void setDefaultStatus() {
+        bcl.setVisibility(View.INVISIBLE);
+        bsl.setVisibility(View.VISIBLE);
+
     }
 
     private void initRootView() {
@@ -57,10 +71,24 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
     }
 
     private void initListener() {
+        mHrl.setOnHeightRelativeLayoutChangedListener(new HeightRelativeLayout.onHeightRelativeLayoutChangedListener() {
+            @Override
+            public void showNormal() {
+                setDefaultStatus();
+            }
+
+            @Override
+            public void showChat() {
+                bcl.setVisibility(View.VISIBLE);
+                bsl.setVisibility(View.INVISIBLE);
+
+            }
+        });
         bsl.setOnSwichLayoutListener(new BottomSwichLayout.onSwichLayoutListener() {
             @Override
             public void onChat() {
-                ToastUtils.show("聊天");
+               bcl.setVisibility(View.VISIBLE);
+               bsl.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -71,17 +99,19 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         bcl.setOnChatSendMsgListener(new BottomChatLayout.onChatSendMsgListener() {
             @Override
             public void sendMsg(String msg) {
-                sendTextMsg(msg, hostId);
+                sendTextMsg(msg, ProfileInfoCustom.TEXT_MSG);
             }
 
             @Override
             public void sendDanMu(String msg) {
+                String newmsg =ProfileInfoCustom.TYPE_DAN+msg;
+                sendTextMsg(newmsg,ProfileInfoCustom.DANMU_MSG);
 
             }
         });
     }
 
-    private void sendTextMsg(final String msg, String hostId) {
+    private void sendTextMsg(final String msg, final int options) {
         List<String> ids = new ArrayList<>();
         ids.add(hostId);
         TIMFriendshipManager.getInstance().getFriendsProfile(ids, new TIMValueCallBack<List<TIMUserProfile>>() {
@@ -92,12 +122,12 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
             @Override
             public void onSuccess(List<TIMUserProfile> timUserProfiles) {
-                realSend(timUserProfiles, msg);
+                realSend(timUserProfiles, msg,options);
             }
         });
     }
 
-    private void realSend(List<TIMUserProfile> timUserProfiles, final String msg) {
+    private void realSend(List<TIMUserProfile> timUserProfiles, final String msg, final int options) {
         final TIMUserProfile profile = timUserProfiles.get(0);
 
         ILVLiveManager.getInstance().sendText(new ILVText(ILVText.ILVTextType.eGroupMsg, profile.getIdentifier(), msg), new ILiveCallBack() {
@@ -111,9 +141,25 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
                 } else {
                     grade = "0";
                 }
+                String identifier = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
+                info.setLiveId(identifier);
                 info.setGrade(Integer.parseInt(grade));
                 info.setText(msg);
                 info.setNickname(profile.getNickName());
+
+                if (options==ProfileInfoCustom.DANMU_MSG){
+                    //发弹幕
+                    String newmsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
+                    String headImg = LiveApplication.getApp().getUserProfile().getProfile().getFaceUrl();
+                    DMMsgInfo dmMsgInfo=new DMMsgInfo();
+                    dmMsgInfo.setLiveId(hostId);
+                    dmMsgInfo.setAvatar(headImg);
+                    dmMsgInfo.setGrade(Integer.parseInt(grade));
+                    dmMsgInfo.setText(newmsg);
+
+                    danmuView.addDanMu(dmMsgInfo);
+                    info.setText(newmsg);
+                }
                 lmlv.addMsg(info);
             }
 
@@ -170,6 +216,8 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         bsl = findViewById(R.id.bsl);
         bcl = findViewById(R.id.bcl);
         lmlv = findViewById(R.id.lmlv);
+        mHrl = findViewById(R.id.mHrl);
+        danmuView=findViewById(R.id.mDv_watch);
 
 
     }
@@ -195,6 +243,7 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
     @Override
     public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
+        LiveMsgInfo liveMsgInfo=new LiveMsgInfo();
         String msg = text.getText();
         String nickName = userProfile.getNickName();
         String grade;
@@ -205,8 +254,23 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         else {
             grade="0";
         }
-        LiveMsgInfo info=new LiveMsgInfo(Integer.parseInt(grade),nickName,msg,SenderId);
-        lmlv.addMsg(info);
+       liveMsgInfo.setLiveId(SenderId);
+        liveMsgInfo.setGrade(Integer.parseInt(grade));
+        if (msg.startsWith(ProfileInfoCustom.TYPE_DAN)){
+            String newmsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
+            liveMsgInfo.setText(newmsg);
+            String headImg = userProfile.getFaceUrl();
+            DMMsgInfo info=new DMMsgInfo();
+            info.setAvatar(headImg);
+            info.setText(newmsg);
+            info.setGrade(Integer.parseInt(grade));
+            info.setLiveId(SenderId);
+            danmuView.addDanMu(info);
+
+        }else{
+            liveMsgInfo.setText(msg);
+        }
+        lmlv.addMsg(liveMsgInfo);
 
     }
 

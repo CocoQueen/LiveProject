@@ -9,13 +9,15 @@ import android.view.View;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.app.LiveApplication;
+import com.example.coco.liveproject.bean.DMMsgInfo;
 import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.BottomChatLayout;
 import com.example.coco.liveproject.widget.BottomSwichLayout;
-import com.example.coco.liveproject.widget.HeightConstraintLayout;
+import com.example.coco.liveproject.widget.DanmuView;
+import com.example.coco.liveproject.widget.HeightRelativeLayout;
 import com.example.coco.liveproject.widget.LiveMsgListView;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
@@ -31,19 +33,21 @@ import com.tencent.livesdk.ILVText;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostLiveActivity extends AppCompatActivity implements  HostLiveContract.HostLiveView, ILVLiveConfig.ILVLiveMsgListener {
+public class HostLiveActivity extends AppCompatActivity implements HostLiveContract.HostLiveView, ILVLiveConfig.ILVLiveMsgListener {
 
     private Toolbar mTool_host;
     private AVRootView mAv_room;
 
     private int roomId;
-    private HostLivePresenterImpl presenter;
+    private HostLiveContract.HostLivePresenter presenter;
     private BottomSwichLayout mBsl_host_live;
     private BottomChatLayout mBcl_host_live;
     private LiveMsgListView mLmlv_host_live;
-    private HeightConstraintLayout mHcl_host_live;
-    ArrayList<LiveMsgInfo>list=new ArrayList<>();
+    private HeightRelativeLayout mHcl_host_live;
+    ArrayList<LiveMsgInfo> list = new ArrayList<>();
     private String sendserId;
+    private LiveMsgInfo info;
+    private DanmuView danmuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +81,13 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
             @Override
             public void onClose() {
                 finish();
-
             }
         });
     }
 
     private void initCreateHost() {
         Intent intent = getIntent();
-        if (intent!=null){
+        if (intent != null) {
             roomId = intent.getIntExtra("roomId", -1);
         }
         presenter.createHost(roomId);
@@ -95,7 +98,7 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
     }
 
     private void initListener() {
-        mHcl_host_live.setOnHeightConstraintLayoutChangedListener(new HeightConstraintLayout.onHeightConstraintLayoutChangedListener() {
+        mHcl_host_live.setOnHeightRelativeLayoutChangedListener(new HeightRelativeLayout.onHeightRelativeLayoutChangedListener() {
             @Override
             public void showNormal() {
                 setDefaultStatus();
@@ -105,28 +108,32 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
             public void showChat() {
                 mBcl_host_live.setVisibility(View.VISIBLE);
                 mBsl_host_live.setVisibility(View.INVISIBLE);
-
             }
         });
         mBcl_host_live.setOnChatSendMsgListener(new BottomChatLayout.onChatSendMsgListener() {
             @Override
             public void sendMsg(String msg) {
-                if (TextUtils.isEmpty(sendserId)){
-                    sendserId= LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
+                if (TextUtils.isEmpty(sendserId)) {
+                    sendserId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
                 }
-                sendTextMsg(msg,sendserId);
+                sendTextMsg(msg, sendserId, ProfileInfoCustom.TEXT_MSG);
             }
 
             @Override
             public void sendDanMu(String msg) {
+                if (TextUtils.isEmpty(sendserId)) {
+                    sendserId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
+                }
+                String newMsg = ProfileInfoCustom.TYPE_DAN + msg;
+                sendTextMsg(newMsg, sendserId, ProfileInfoCustom.DANMU_MSG);
 
             }
         });
     }
 
-    private void sendTextMsg(final String msg, String sendserId) {
-        List<String>ids=new ArrayList<>();
-        ids.add(sendserId);
+    private void sendTextMsg(final String msg, String id, final int options) {
+        List<String> ids = new ArrayList<>();
+        ids.add(id);
         TIMFriendshipManager.getInstance().getFriendsProfile(ids, new TIMValueCallBack<List<TIMUserProfile>>() {
             @Override
             public void onError(int i, String s) {
@@ -135,49 +142,62 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
 
             @Override
             public void onSuccess(List<TIMUserProfile> timUserProfiles) {
-                realSend(timUserProfiles,msg);
+                realSend(timUserProfiles, msg, options);
 
             }
         });
 
     }
 
-    private void realSend(List<TIMUserProfile> timUserProfiles, final String msg) {
+    private void realSend(List<TIMUserProfile> timUserProfiles, final String msg, final int options) {
         final TIMUserProfile profile = timUserProfiles.get(0);
         ILVLiveManager.getInstance().sendText(new ILVText(ILVText.ILVTextType.eGroupMsg, profile.getIdentifier(), msg), new ILiveCallBack() {
 
-
-
             @Override
             public void onSuccess(Object data) {
-                String grade=null;
+                String grade = null;
                 String liveId;
                 String nickName;
                 LiveMsgInfo info = new LiveMsgInfo();
-                if (sendserId.equals(LiveApplication.getApp().getUserProfile().getProfile().getIdentifier())){
+                if (sendserId.equals(LiveApplication.getApp().getUserProfile().getProfile().getIdentifier())) {
                     grade = LiveApplication.getApp().getUserProfile().getGrade() + "";
                     liveId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
                     nickName = LiveApplication.getApp().getUserProfile().getProfile().getNickName();
-                }else {
+                } else {
                     byte[] bytes = profile.getCustomInfo().get(ProfileInfoCustom.INFO_GRADE);
-                    if (bytes!=null){
-                        grade=new String(bytes);
+                    if (bytes != null) {
+                        grade = new String(bytes);
                     }
-                    nickName=profile.getNickName();
+                    nickName = profile.getNickName();
                 }
-                if (TextUtils.isEmpty(grade)){
-                    grade="0";
+                if (TextUtils.isEmpty(grade)) {
+                    grade = "0";
                 }
+                liveId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
                 info.setGrade(Integer.parseInt(grade));
                 info.setText(msg);
-                info.setNickname(TextUtils.isEmpty(nickName)?sendserId:nickName);
-                info.setLiveId(sendserId);
+                info.setNickname(TextUtils.isEmpty(nickName) ? sendserId : nickName);
+                info.setLiveId(liveId);
+                if (options == ProfileInfoCustom.DANMU_MSG) {
+                    String newMsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
+                    String headImg = LiveApplication.getApp().getUserProfile().getProfile().getFaceUrl();
+                    DMMsgInfo dmMsgInfo = new DMMsgInfo();
+                    dmMsgInfo.setLiveId(liveId);
+                    dmMsgInfo.setAvatar(headImg);
+                    dmMsgInfo.setGrade(Integer.parseInt(grade));
+                    dmMsgInfo.setText(newMsg);
+                    danmuView.addDanMu(dmMsgInfo);
+                    info.setText(newMsg);
+
+
+                }
+
                 mLmlv_host_live.addMsg(info);
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                ToastUtils.show("发送失败"+errMsg+errCode);
+                ToastUtils.show("发送失败" + errMsg + errCode);
 
             }
         });
@@ -200,10 +220,10 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
         mBsl_host_live = findViewById(R.id.mBsl_host_live);
         mBcl_host_live = findViewById(R.id.mBcl_host_live);
         mLmlv_host_live = findViewById(R.id.mLmlv_host_live);
+        danmuView = findViewById(R.id.mDv);
 
         ILVLiveManager.getInstance().setAvVideoView(mAv_room);//添加avrootview
     }
-
 
 
     @Override
@@ -234,7 +254,7 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
-                ToastUtils.show("退出直播失败"+errMsg+errCode);
+                ToastUtils.show("退出直播失败" + errMsg + errCode);
 
             }
         });
@@ -242,17 +262,31 @@ public class HostLiveActivity extends AppCompatActivity implements  HostLiveCont
 
     @Override
     public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        sendserId=SenderId;
+        sendserId = SenderId;
         String msg = text.getText();
         String nickName = userProfile.getNickName();
         String grade;
         byte[] bytes = userProfile.getCustomInfo().get(ProfileInfoCustom.INFO_GRADE);
-        if (bytes!=null){
-            grade=new String(bytes);
-        }else {
-            grade="0";
+        if (bytes != null) {
+            grade = new String(bytes);
+        } else {
+            grade = "0";
         }
-        LiveMsgInfo info = new LiveMsgInfo(Integer.parseInt(grade), nickName, msg, SenderId);
+        if (msg.startsWith(ProfileInfoCustom.TYPE_DAN)) {
+            String newMsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
+            info = new LiveMsgInfo(Integer.parseInt(grade), nickName, msg, SenderId);
+            String headImg = userProfile.getFaceUrl();
+            DMMsgInfo dmMsgInfo = new DMMsgInfo();
+            dmMsgInfo.setText(newMsg);
+            dmMsgInfo.setGrade(Integer.parseInt(grade));
+            dmMsgInfo.setAvatar(headImg);
+            dmMsgInfo.setLiveId(SenderId);
+            danmuView.addDanMu(dmMsgInfo);
+
+
+        } else {
+            info = new LiveMsgInfo(Integer.parseInt(grade), nickName, msg, SenderId);
+        }
         mLmlv_host_live.addMsg(info);
 
     }

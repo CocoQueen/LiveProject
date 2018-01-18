@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.coco.liveproject.widget.HeightRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mHrl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.coco.liveproject.ui.watcher.WatcherActivity">
@@ -28,5 +29,10 @@
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_above="@id/bsl" />
-
-</RelativeLayout>
+    <com.example.coco.liveproject.widget.DanmuView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/lmlv"
+        android:id="@+id/mDv_watch"
+        />
+</com.example.coco.liveproject.widget.HeightRelativeLayout>

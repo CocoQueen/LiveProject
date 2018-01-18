@@ -33,5 +33,8 @@ public interface ProfileInfoCustom {
                     |TIMFriendshipManager.TIM_PROFILE_FLAG_GROUP;
 
 
-
+    String TYPE_MSG = "MSG+****";
+    String TYPE_DAN = "DAN+****";
+    int TEXT_MSG = 0x801;
+    int DANMU_MSG=0x802;
 }
