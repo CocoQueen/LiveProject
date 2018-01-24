@@ -14,11 +14,11 @@ import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
 import com.example.coco.liveproject.utils.ToastUtils;
-import com.example.coco.liveproject.widget.BottomChatLayout;
-import com.example.coco.liveproject.widget.BottomSwichLayout;
-import com.example.coco.liveproject.widget.DanmuView;
-import com.example.coco.liveproject.widget.HeightRelativeLayout;
-import com.example.coco.liveproject.widget.LiveMsgListView;
+import com.example.coco.liveproject.widget.widget.BottomChatLayout;
+import com.example.coco.liveproject.widget.widget.BottomSwichLayout;
+import com.example.coco.liveproject.widget.danmu.DanmuView;
+import com.example.coco.liveproject.widget.widget.HeightRelativeLayout;
+import com.example.coco.liveproject.widget.widget.LiveMsgListView;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
@@ -81,6 +81,10 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
             @Override
             public void onClose() {
                 finish();
+            }
+
+            @Override
+            public void onGift() {
             }
         });
     }
@@ -222,6 +226,7 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
         mLmlv_host_live = findViewById(R.id.mLmlv_host_live);
         danmuView = findViewById(R.id.mDv);
 
+        mBsl_host_live.mImg_bsl_gift.setVisibility(View.INVISIBLE);
         ILVLiveManager.getInstance().setAvVideoView(mAv_room);//添加avrootview
     }
 

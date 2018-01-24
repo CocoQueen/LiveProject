@@ -1,7 +1,8 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.editprofile;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -16,17 +17,17 @@ import android.widget.TextView;
 import com.example.coco.liveproject.R;
 
 /**
- * Created by coco on 2018/1/6.
+ * Created by coco on 2018/1/5.
  */
 
-public class EditProfileNomalDialog implements View.OnClickListener {
-
-    private OnProfileNomalChangedListener listener;
-    private Activity activity;
-    private final Dialog dialog;
+public class EditProfileDialog implements View.OnClickListener {
+    private onEditChangedListener listener;
+    private Context context;
     private LayoutInflater inflater;
+    private Dialog dialog;
+    private final AlertDialog.Builder builder;
     private WindowManager manager;
-    private int screenWidth;
+    private Display display;
     private View view;
     private ImageView mImg_edit_dialog;
     private TextView mTv_edit_dialog_title;
@@ -34,28 +35,32 @@ public class EditProfileNomalDialog implements View.OnClickListener {
     private Button mBtn_edit_dialog_ok;
     private Button mBtn_edit_dialog_cancle;
 
-    public EditProfileNomalDialog(Activity activity, OnProfileNomalChangedListener listener) {
-        this.activity = activity;
+
+    public interface onEditChangedListener {
+        void onChanged(String value);
+
+        void onEmpty();
+    }
+
+    public EditProfileDialog(onEditChangedListener listener, Context context) {
         this.listener = listener;
-        dialog = new Dialog(activity);
+        this.context = context;
+        builder = new AlertDialog.Builder(context);
         initView();
     }
 
-    public EditProfileNomalDialog(Activity activity, OnProfileNomalChangedListener listener, int styleId) {
-        this.activity = activity;
+    public EditProfileDialog(onEditChangedListener listener, Context context, int themeResId) {
         this.listener = listener;
-        dialog = new Dialog(activity, styleId);
+        this.context = context;
+        builder = new AlertDialog.Builder(context);
         initView();
-
     }
 
     private void initView() {
-        inflater = LayoutInflater.from(activity);
-        manager = activity.getWindowManager();
-        Display display = manager.getDefaultDisplay();
-        screenWidth = display.getWidth();
+        manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        display = manager.getDefaultDisplay();
+        inflater = LayoutInflater.from(context);
         view = inflater.inflate(R.layout.edit_profile_dialog, null, false);
-
         mImg_edit_dialog = view.findViewById(R.id.mImg_edit_dialog);
         mTv_edit_dialog_title = view.findViewById(R.id.mTv_edit_dialog_title);
         mEd_edit_dialog_content = view.findViewById(R.id.mEd_edit_dialog_content);
@@ -65,13 +70,18 @@ public class EditProfileNomalDialog implements View.OnClickListener {
         mBtn_edit_dialog_ok.setOnClickListener(this);
         mBtn_edit_dialog_cancle.setOnClickListener(this);
 
-        dialog.setContentView(view);
+        builder.setView(view);
+        dialog = builder.create();
+
         Window window = dialog.getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.width = screenWidth * 80 / 100;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height=WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(layoutParams);
+
+
     }
+
 
     @Override
     public void onClick(View v) {
@@ -80,15 +90,14 @@ public class EditProfileNomalDialog implements View.OnClickListener {
                 String content = mEd_edit_dialog_content.getText().toString().trim();
                 if (!TextUtils.isEmpty(content)) {
                     if (listener != null) {
-                        listener.onChangeSucess(content);
+                        listener.onChanged(content);
                     }
                 } else {
                     if (listener != null) {
-                        listener.onChangeError();
+                        listener.onEmpty();
                     }
 
                 }
-
                 break;
             case R.id.mBtn_edit_dialog_cancle:
                 if (dialog.isShowing()) {
@@ -99,7 +108,16 @@ public class EditProfileNomalDialog implements View.OnClickListener {
 
     }
 
-    //设置标题和图标
+    public void show() {
+        dialog.show();
+    }
+
+    public void dismiss() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
     public void setTitleAndIcon(String title, int resId) {
         if (!TextUtils.isEmpty(title)) {
             mTv_edit_dialog_title.setText(title);
@@ -109,33 +127,4 @@ public class EditProfileNomalDialog implements View.OnClickListener {
         }
 
     }
-
-    //对话框显示
-    public void show() {
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
-        }
-    }
-
-    //对话框隐藏
-    public void hide() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
-
-    //设置对话框可否取消
-    public void setCancelable(boolean value) {
-        dialog.setCancelable(value);
-    }
-
-    //接口  包含改变内容成功和失败的方法
-    public interface OnProfileNomalChangedListener {
-        //改变内容成功
-        void onChangeSucess(String value);
-
-        void onChangeError();
-    }
-
-
 }

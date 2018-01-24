@@ -1,4 +1,4 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.danmu;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

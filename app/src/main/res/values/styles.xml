@@ -20,5 +20,12 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-
+    <style name="custom_dialog" parent="@android:style/Theme.DeviceDefault.Dialog">
+    <item name="android:windowNoTitle">true</item>
+    <!--<item name="android:windowIsTranslucent">true</item>-->
+    <!--<item name="android:windowFrame">@null</item>-->
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@color/gray2</item>
+    <item name="android:backgroundDimEnabled">false</item><!--activity不变暗-->
+    </style>>
 </resources>

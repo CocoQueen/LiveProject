@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/gray3"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/mImg_gift_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:background="@mipmap/logo" />
+
+    <TextView
+        android:id="@+id/mTv_gift_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mImg_gift_icon"
+        android:layout_centerHorizontal="true"
+        android:text="1星币"
+        android:textColor="@color/gold"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/mTv_gift_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mTv_gift_price"
+        android:layout_centerHorizontal="true"
+        android:text="礼物"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/mImg_gift_select"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:background="@mipmap/grade" />
+
+</RelativeLayout>

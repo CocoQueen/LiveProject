@@ -1,21 +1,21 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.widget;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
 
 /**
  * Created by coco on 2018/1/16.
  */
 
-public class HeightRelativeLayout extends RelativeLayout {
-    private onHeightRelativeLayoutChangedListener listener;
+public class HeightConstraintLayout extends ConstraintLayout {
+    private onHeightConstraintLayoutChangedListener listener;
 
-    public HeightRelativeLayout(Context context) {
+    public HeightConstraintLayout(Context context) {
         super(context);
     }
 
-    public HeightRelativeLayout(Context context, AttributeSet attrs) {
+    public HeightConstraintLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -34,13 +34,13 @@ public class HeightRelativeLayout extends RelativeLayout {
         }
     }
 
-    public interface onHeightRelativeLayoutChangedListener {
+    public interface onHeightConstraintLayoutChangedListener {
         void showNormal();
 
         void showChat();
     }
 
-    public void setOnHeightRelativeLayoutChangedListener(onHeightRelativeLayoutChangedListener listener) {
+    public void setOnHeightConstraintLayoutChangedListener(onHeightConstraintLayoutChangedListener listener) {
         this.listener = listener;
     }
 }

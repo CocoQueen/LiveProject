@@ -20,32 +20,32 @@
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
             />
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_headImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="头像"
             app:itemtype="avatar" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_nickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="昵称" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_usernum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="直播号" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_sex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="性别" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_xingzuo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,25 +62,25 @@
             android:textColor="@color/gray"
             android:textSize="14sp" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_home_town"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="家乡" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_job"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="职业" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemtilte="活跃地带" />
 
-        <com.example.coco.liveproject.widget.EditProfileItem
+        <com.example.coco.liveproject.widget.editprofile.EditProfileItem
             android:id="@+id/mEp_sign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

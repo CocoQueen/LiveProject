@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.coco.liveproject.widget.danmu.DanMuItemView
-        android:id="@+id/mDan_item"
+    <com.example.coco.liveproject.widget.gift.GiftView
+        android:id="@+id/mGift_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.coco.liveproject.widget.danmu.DanMuItemView
-        android:id="@+id/mDan_item2"
+    <com.example.coco.liveproject.widget.gift.GiftView
+        android:id="@+id/mGift_item2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

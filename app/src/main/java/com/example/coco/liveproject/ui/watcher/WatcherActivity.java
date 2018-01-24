@@ -2,23 +2,30 @@ package com.example.coco.liveproject.ui.watcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.app.LiveApplication;
 import com.example.coco.liveproject.bean.DMMsgInfo;
+import com.example.coco.liveproject.bean.GiftInfo;
+import com.example.coco.liveproject.bean.GiftMsgInfo;
 import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
 import com.example.coco.liveproject.model.live.Constants;
 import com.example.coco.liveproject.model.live.DemoFunc;
 import com.example.coco.liveproject.utils.ToastUtils;
-import com.example.coco.liveproject.widget.BottomChatLayout;
-import com.example.coco.liveproject.widget.BottomSwichLayout;
-import com.example.coco.liveproject.widget.DanmuView;
-import com.example.coco.liveproject.widget.HeightRelativeLayout;
-import com.example.coco.liveproject.widget.LiveMsgListView;
+import com.example.coco.liveproject.widget.danmu.DanmuView;
+import com.example.coco.liveproject.widget.gift.GiftItem;
+import com.example.coco.liveproject.widget.gift.GiftSendDialog;
+import com.example.coco.liveproject.widget.gift.GiftView;
+import com.example.coco.liveproject.widget.widget.BottomChatLayout;
+import com.example.coco.liveproject.widget.widget.BottomSwichLayout;
+import com.example.coco.liveproject.widget.widget.HeightRelativeLayout;
+import com.example.coco.liveproject.widget.widget.LiveMsgListView;
 import com.tencent.TIMFriendshipManager;
 import com.tencent.TIMMessage;
 import com.tencent.TIMUserProfile;
@@ -36,6 +43,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.ILVLiveMsgListener {
+    private static final int FIRST_SEND_GIFT = -1;
+    private static final int REPEAT_SEND_GIFT = 1;
+    private int repeatTimeLimit = 10;
+    private long firstSendTime;
+    GiftItem item;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case FIRST_SEND_GIFT:
+                    if (repeatTimeLimit > 0) {
+                        repeatTimeLimit--;
+                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
+                        //TODO 点击按钮发送礼物
+                        dialog.setSendButtonText("发送" + repeatTimeLimit);
+                    } else {
+                        item.setIsRepeat(false);
+                        firstSendTime = 0;
+                        repeatTimeLimit = 10;
+                        //TODO mbtn
+                        dialog.setSendButtonText("发送");
+                    }
+                    break;
+                case REPEAT_SEND_GIFT:
+                    if (repeatTimeLimit > 0) {
+                        repeatTimeLimit--;
+                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
+                        //TODO mbtn
+                        dialog.setSendButtonText("发送" + repeatTimeLimit);
+                    } else {
+                        item.setIsRepeat(false);
+                        item.repeatSendWithoutAddNum();
+                        firstSendTime = 0;
+                        repeatTimeLimit = 10;
+                        //TODO mbtn
+                        dialog.setSendButtonText("发送");
+                    }
+                    break;
+                default:
+                    super.handleMessage(msg);
+                    break;
+            }
+        }
+    };
+
     private AVRootView mAv_watcher;
     private int roomId;
     private String hostId;
@@ -45,6 +99,10 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
     ArrayList<LiveMsgInfo> list = new ArrayList<>();
     private HeightRelativeLayout mHrl;
     DanmuView danmuView;
+
+    GiftInfo selectedGift;
+    GiftSendDialog dialog;
+    GiftView giftView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +145,33 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         bsl.setOnSwichLayoutListener(new BottomSwichLayout.onSwichLayoutListener() {
             @Override
             public void onChat() {
-               bcl.setVisibility(View.VISIBLE);
-               bsl.setVisibility(View.INVISIBLE);
+                bcl.setVisibility(View.VISIBLE);
+                bsl.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onClose() {
                 finish();
+            }
+
+            @Override
+            public void onGift() {
+                GiftSendDialog.onGiftSendListener listener = new GiftSendDialog.onGiftSendListener() {
+                    @Override
+                    public void onSend(GiftInfo info) {
+                        selectedGift = info;
+                        String text = ProfileInfoCustom.TYPE_GIFT + "送了一个" + info.getGiftName();
+                        item = giftView.getItemView();
+                        GiftMsgInfo giftMsgInfo = new GiftMsgInfo();
+                        giftMsgInfo.setInfo(info);
+                        item.bindData(giftMsgInfo);
+                        sendGift();
+                        sendTextMsg(text,ProfileInfoCustom.GIFT_MSG);
+                    }
+                };
+                dialog=new GiftSendDialog(WatcherActivity.this,R.style.custom_dialog,listener);
+                dialog.show();
+
             }
         });
         bcl.setOnChatSendMsgListener(new BottomChatLayout.onChatSendMsgListener() {
@@ -104,11 +182,27 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
             @Override
             public void sendDanMu(String msg) {
-                String newmsg =ProfileInfoCustom.TYPE_DAN+msg;
-                sendTextMsg(newmsg,ProfileInfoCustom.DANMU_MSG);
-
+                String newmsg = ProfileInfoCustom.TYPE_DAN + msg;
+                sendTextMsg(newmsg, ProfileInfoCustom.DANMU_MSG);
             }
         });
+    }
+
+    private void sendGift() {
+        if (firstSendTime == 0) {
+            item.setIsRepeat(false);
+            firstSendTime = System.currentTimeMillis();
+            handler.sendEmptyMessage(FIRST_SEND_GIFT);
+            item.setVisibility(View.VISIBLE);
+            item.startAnimtion();
+        } else {
+            item.setIsRepeat(true);
+            item.repeatSend();
+            handler.removeMessages(FIRST_SEND_GIFT);
+            handler.removeMessages(REPEAT_SEND_GIFT);
+            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
+            repeatTimeLimit = 10;
+        }
     }
 
     private void sendTextMsg(final String msg, final int options) {
@@ -122,7 +216,7 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
             @Override
             public void onSuccess(List<TIMUserProfile> timUserProfiles) {
-                realSend(timUserProfiles, msg,options);
+                realSend(timUserProfiles, msg, options);
             }
         });
     }
@@ -147,11 +241,11 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
                 info.setText(msg);
                 info.setNickname(profile.getNickName());
 
-                if (options==ProfileInfoCustom.DANMU_MSG){
+                if (options == ProfileInfoCustom.DANMU_MSG) {
                     //发弹幕
                     String newmsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
                     String headImg = LiveApplication.getApp().getUserProfile().getProfile().getFaceUrl();
-                    DMMsgInfo dmMsgInfo=new DMMsgInfo();
+                    DMMsgInfo dmMsgInfo = new DMMsgInfo();
                     dmMsgInfo.setLiveId(hostId);
                     dmMsgInfo.setAvatar(headImg);
                     dmMsgInfo.setGrade(Integer.parseInt(grade));
@@ -217,8 +311,11 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         bcl = findViewById(R.id.bcl);
         lmlv = findViewById(R.id.lmlv);
         mHrl = findViewById(R.id.mHrl);
-        danmuView=findViewById(R.id.mDv_watch);
+        danmuView = findViewById(R.id.mDv_watch);
 
+
+
+        bsl.mImg_bsl_gift.setVisibility(View.VISIBLE);
 
     }
 
@@ -243,31 +340,30 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
     @Override
     public void onNewTextMsg(ILVText text, String SenderId, TIMUserProfile userProfile) {
-        LiveMsgInfo liveMsgInfo=new LiveMsgInfo();
+        LiveMsgInfo liveMsgInfo = new LiveMsgInfo();
         String msg = text.getText();
         String nickName = userProfile.getNickName();
         String grade;
         byte[] bytes = userProfile.getCustomInfo().get(ProfileInfoCustom.INFO_GRADE);
-        if (bytes!=null){
-            grade=new String(bytes);
+        if (bytes != null) {
+            grade = new String(bytes);
+        } else {
+            grade = "0";
         }
-        else {
-            grade="0";
-        }
-       liveMsgInfo.setLiveId(SenderId);
+        liveMsgInfo.setLiveId(SenderId);
         liveMsgInfo.setGrade(Integer.parseInt(grade));
-        if (msg.startsWith(ProfileInfoCustom.TYPE_DAN)){
+        if (msg.startsWith(ProfileInfoCustom.TYPE_DAN)) {
             String newmsg = msg.substring(ProfileInfoCustom.TYPE_DAN.length(), msg.length());
             liveMsgInfo.setText(newmsg);
             String headImg = userProfile.getFaceUrl();
-            DMMsgInfo info=new DMMsgInfo();
+            DMMsgInfo info = new DMMsgInfo();
             info.setAvatar(headImg);
             info.setText(newmsg);
             info.setGrade(Integer.parseInt(grade));
             info.setLiveId(SenderId);
             danmuView.addDanMu(info);
 
-        }else{
+        } else {
             liveMsgInfo.setText(msg);
         }
         lmlv.addMsg(liveMsgInfo);
@@ -283,7 +379,8 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
     public void onNewOtherMsg(TIMMessage message) {
 
     }
-    public void quitRoom(){
+
+    public void quitRoom() {
         ILVLiveManager.getInstance().quitRoom(new ILiveCallBack() {
             @Override
             public void onSuccess(Object data) {

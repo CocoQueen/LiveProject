@@ -1,4 +1,4 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

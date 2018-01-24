@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+
+    >
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mVp_gift"
+        android:layout_width="match_parent"
+        android:layout_height="230dp" />
+
+    <LinearLayout
+        android:id="@+id/mLl_gift_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/mImg_indicator0"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:background="@mipmap/indicator_selected" />
+
+        <ImageView
+            android:id="@+id/mImg_indicator1"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:background="@mipmap/indicator_normal" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:id="@+id/mBtn_send_gift"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_bg_grade"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

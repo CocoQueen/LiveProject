@@ -1,4 +1,4 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.editprofile;
 
 import android.app.Activity;
 import android.app.Dialog;

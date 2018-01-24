@@ -15,7 +15,7 @@ import com.example.coco.liveproject.model.PhotoHelper;
 import com.example.coco.liveproject.qiniu.QiniuUploadHelper;
 import com.example.coco.liveproject.utils.ImageUtils;
 import com.example.coco.liveproject.utils.ToastUtils;
-import com.example.coco.liveproject.widget.EditProfileHeadImgDialog;
+import com.example.coco.liveproject.widget.editprofile.EditProfileHeadImgDialog;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 

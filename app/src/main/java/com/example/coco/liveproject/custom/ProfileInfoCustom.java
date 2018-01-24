@@ -35,6 +35,11 @@ public interface ProfileInfoCustom {
 
     String TYPE_MSG = "MSG+****";
     String TYPE_DAN = "DAN+****";
+    String TYPE_GIFT = "GIFT+****";
+    String TYPE_FULL = "FULL+****";
+
     int TEXT_MSG = 0x801;
     int DANMU_MSG=0x802;
+    int GIFT_MSG=0x803;
+    int FULL_MSG=0x804;
 }

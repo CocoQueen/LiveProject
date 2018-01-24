@@ -1,4 +1,4 @@
-package com.example.coco.liveproject.widget;
+package com.example.coco.liveproject.widget.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -21,6 +21,7 @@ public class BottomSwichLayout extends FrameLayout implements View.OnClickListen
     private LayoutInflater inflater;
     private ImageView mImg_bsl_chat;
     private ImageView mImg_bsl_close;
+    public ImageView mImg_bsl_gift;
     private onSwichLayoutListener listener;
 
     public BottomSwichLayout(@NonNull Context context) {
@@ -40,9 +41,11 @@ public class BottomSwichLayout extends FrameLayout implements View.OnClickListen
 
         mImg_bsl_chat = view.findViewById(R.id.mImg_bsl_chat);
         mImg_bsl_close = view.findViewById(R.id.mImg_bsl_close);
+        mImg_bsl_gift = view.findViewById(R.id.mImg_bsl_gift);
 
         mImg_bsl_chat.setOnClickListener(this);
         mImg_bsl_close.setOnClickListener(this);
+        mImg_bsl_gift.setOnClickListener(this);
 
     }
 
@@ -59,6 +62,11 @@ public class BottomSwichLayout extends FrameLayout implements View.OnClickListen
                     listener.onClose();
                 }
                 break;
+            case R.id.mImg_bsl_gift:
+                if (listener!=null){
+                    listener.onGift();
+                }
+                break;
         }
     }
 
@@ -66,6 +74,8 @@ public class BottomSwichLayout extends FrameLayout implements View.OnClickListen
         void onChat();
 
         void onClose();
+
+        void onGift();
     }
 
     public void setOnSwichLayoutListener(onSwichLayoutListener listener) {
