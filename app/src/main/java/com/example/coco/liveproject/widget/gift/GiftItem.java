@@ -25,20 +25,27 @@ import com.example.coco.liveproject.utils.ImageUtils;
 public class GiftItem extends FrameLayout {
 
     private LayoutInflater inflater;
+
     private RelativeLayout mRl_gift_item;
     private ImageView mImg_gift_icon;
     private ImageView mImg_sender;
     private TextView mTv_gift_info;
     private TextView mTv_gift_num;
     private TextView mTv_sender_id;
+    private FrameLayout mFl;
+
     private Animation gift_left_in;
     private Animation gift_icon_left_in;
     private Animation gift_num_scale;
-    private int sendNum = 0;
-    private FrameLayout mFl;
     private Animation gift_left_out;
+
+    private int sendNum = 0;
     boolean isRepeat = false;
     private View view;
+
+    public boolean isRepeat(){
+        return isRepeat;
+    }
 
     public GiftItem(@NonNull Context context) {
         super(context);
@@ -54,12 +61,16 @@ public class GiftItem extends FrameLayout {
 
     private void initView() {
         view = inflater.inflate(R.layout.item_send_gift, this, true);
+
         mRl_gift_item = view.findViewById(R.id.mRl_gift_item);
+
         mImg_gift_icon = view.findViewById(R.id.mImg_gift_icon);
         mImg_sender = view.findViewById(R.id.mImg_sender);
+
         mTv_gift_info = view.findViewById(R.id.mTv_gift_info);
         mTv_gift_num = view.findViewById(R.id.mTv_gift_num);
         mTv_sender_id = view.findViewById(R.id.mTv_sender_id);
+
         mFl = view.findViewById(R.id.mFl);
 
 
@@ -67,6 +78,14 @@ public class GiftItem extends FrameLayout {
         mImg_gift_icon.setVisibility(INVISIBLE);
         mTv_gift_num.setVisibility(INVISIBLE);
 
+//        {
+//            mImg_gift_icon = view.findViewById(R.id.mImg_gift_icon);
+//            mImg_gift_icon.setVisibility(INVISIBLE);
+//        }
+//        {
+//            mTv_gift_num = view.findViewById(R.id.mTv_gift_num);
+//            mTv_gift_num.setVisibility(INVISIBLE);
+//        }
         gift_left_in = AnimationUtils.loadAnimation(getContext(), R.anim.gift_left_in);
         gift_icon_left_in = AnimationUtils.loadAnimation(getContext(), R.anim.gift_icon_left_in);
         gift_num_scale = AnimationUtils.loadAnimation(getContext(), R.anim.gift_num_scale);
@@ -82,7 +101,7 @@ public class GiftItem extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mImg_gift_icon.setAnimation(gift_icon_left_in);
+                mImg_gift_icon.startAnimation(gift_icon_left_in);
             }
 
             @Override
@@ -98,7 +117,7 @@ public class GiftItem extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mTv_gift_num.setAnimation(gift_num_scale);
+                mTv_gift_num.startAnimation(gift_num_scale);
 //                mTv_gift_num.setVisibility(VISIBLE);
 
             }
@@ -142,6 +161,7 @@ public class GiftItem extends FrameLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
                 mRl_gift_item.setVisibility(INVISIBLE);
+//                setVisibility(INVISIBLE);
             }
 
             @Override
@@ -179,8 +199,8 @@ public class GiftItem extends FrameLayout {
         }
     }
 
-    public void startAnimtion() {
-        mRl_gift_item.setAnimation(gift_left_in);
+    public void startAnimte() {
+        mRl_gift_item.startAnimation(gift_left_in);
         sendNum = 1;
     }
 

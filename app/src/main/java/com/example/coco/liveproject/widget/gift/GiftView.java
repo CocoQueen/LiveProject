@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.GiftMsgInfo;
-import com.example.coco.liveproject.widget.danmu.DanMuItemView;
 
 import java.util.LinkedList;
 
@@ -23,7 +22,7 @@ public class GiftView extends LinearLayout {
     private LayoutInflater inflater;
     private GiftItem mGift_item;
     private GiftItem mGift_item2;
-    private int screenWidth;
+
     LinkedList<GiftMsgInfo> list;
 
     public GiftView(Context context) {
@@ -47,28 +46,28 @@ public class GiftView extends LinearLayout {
     }
 
     private void setDefault() {
+        setOrientation(VERTICAL);
         mGift_item.setVisibility(INVISIBLE);
         mGift_item2.setVisibility(INVISIBLE);
     }
 
     public GiftItem getItemView() {
-        if (mGift_item.getVisibility() == INVISIBLE) {
+//        if (mGift_item.getVisibility() == INVISIBLE) {
+//            return mGift_item;
+//        } else if (mGift_item2.getVisibility() == INVISIBLE) {
+//            return mGift_item2;
+//        } else {
             return mGift_item;
-        } else if (mGift_item2.getVisibility() == INVISIBLE) {
-            return mGift_item2;
-        } else {
-            return null;
-        }
+//        }
     }
 
     public void addGift(GiftMsgInfo info,onGiftViewListener listener) {
-        GiftItem view = getItemView();
-        if (view != null) {
+        GiftItem item = getItemView();
+        if (item != null) {
             if (listener!=null){
-            listener.onSetListener(view);
+            listener.onSetListener(item);
             }
         } else {
-
             if (list == null) {
                 list = new LinkedList<>();
             }
@@ -78,7 +77,7 @@ public class GiftView extends LinearLayout {
 
 
 
-    private void showCacheMsg(DanMuItemView view) {
+    private void showCacheMsg(GiftItem view) {
         if (list != null && !list.isEmpty()) {
             GiftMsgInfo info = list.removeFirst();
 //            startActionAnim(info, view);

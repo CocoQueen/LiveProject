@@ -2,8 +2,6 @@ package com.example.coco.liveproject.ui.watcher;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -11,7 +9,6 @@ import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.app.LiveApplication;
 import com.example.coco.liveproject.bean.DMMsgInfo;
 import com.example.coco.liveproject.bean.GiftInfo;
-import com.example.coco.liveproject.bean.GiftMsgInfo;
 import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
@@ -19,9 +16,7 @@ import com.example.coco.liveproject.model.live.Constants;
 import com.example.coco.liveproject.model.live.DemoFunc;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.danmu.DanmuView;
-import com.example.coco.liveproject.widget.gift.GiftItem;
 import com.example.coco.liveproject.widget.gift.GiftSendDialog;
-import com.example.coco.liveproject.widget.gift.GiftView;
 import com.example.coco.liveproject.widget.widget.BottomChatLayout;
 import com.example.coco.liveproject.widget.widget.BottomSwichLayout;
 import com.example.coco.liveproject.widget.widget.HeightRelativeLayout;
@@ -43,52 +38,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.ILVLiveMsgListener {
-    private static final int FIRST_SEND_GIFT = -1;
-    private static final int REPEAT_SEND_GIFT = 1;
-    private int repeatTimeLimit = 10;
-    private long firstSendTime;
-    GiftItem item;
+//    private static final int FIRST_SEND_GIFT = -1;
+//    private static final int REPEAT_SEND_GIFT = 1;
+//    private int repeatTimeLimit = 10;
+//    private long firstSendTime;
+//    GiftItem item;
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case FIRST_SEND_GIFT:
-                    if (repeatTimeLimit > 0) {
-                        repeatTimeLimit--;
-                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
-                        //TODO 点击按钮发送礼物
-                        dialog.setSendButtonText("发送" + repeatTimeLimit);
-                    } else {
-                        item.setIsRepeat(false);
-                        firstSendTime = 0;
-                        repeatTimeLimit = 10;
-                        //TODO mbtn
-                        dialog.setSendButtonText("发送");
-                    }
-                    break;
-                case REPEAT_SEND_GIFT:
-                    if (repeatTimeLimit > 0) {
-                        repeatTimeLimit--;
-                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
-                        //TODO mbtn
-                        dialog.setSendButtonText("发送" + repeatTimeLimit);
-                    } else {
-                        item.setIsRepeat(false);
-                        item.repeatSendWithoutAddNum();
-                        firstSendTime = 0;
-                        repeatTimeLimit = 10;
-                        //TODO mbtn
-                        dialog.setSendButtonText("发送");
-                    }
-                    break;
-                default:
-                    super.handleMessage(msg);
-                    break;
-            }
-        }
-    };
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//            switch (msg.what) {
+//                case FIRST_SEND_GIFT:
+//                    if (repeatTimeLimit > 0) {
+//                        repeatTimeLimit--;
+//                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
+//                        dialog.setSendButtonText("发送" + repeatTimeLimit);
+//                    } else {
+//                        item.setIsRepeat(false);
+//                        firstSendTime = 0;
+//                        repeatTimeLimit = 10;
+//                        dialog.setSendButtonText("发送");
+//                    }
+//                    break;
+//                case REPEAT_SEND_GIFT:
+//                    if (repeatTimeLimit > 0) {
+//                        repeatTimeLimit--;
+//                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
+//                        dialog.setSendButtonText("发送" + repeatTimeLimit);
+//                    } else {
+//                        item.setIsRepeat(false);
+//                        item.repeatSendWithoutAddNum();
+//                        firstSendTime = 0;
+//                        repeatTimeLimit = 10;
+//                        dialog.setSendButtonText("发送");
+//                    }
+//                    break;
+//                default:
+//                    super.handleMessage(msg);
+//                    break;
+//            }
+//        }
+//    };
 
     private AVRootView mAv_watcher;
     private int roomId;
@@ -102,7 +93,7 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
     GiftInfo selectedGift;
     GiftSendDialog dialog;
-    GiftView giftView;
+//    GiftView giftView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,21 +147,21 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
 
             @Override
             public void onGift() {
-                GiftSendDialog.onGiftSendListener listener = new GiftSendDialog.onGiftSendListener() {
-                    @Override
-                    public void onSend(GiftInfo info) {
-                        selectedGift = info;
-                        String text = ProfileInfoCustom.TYPE_GIFT + "送了一个" + info.getGiftName();
-                        item = giftView.getItemView();
-                        GiftMsgInfo giftMsgInfo = new GiftMsgInfo();
-                        giftMsgInfo.setInfo(info);
-                        item.bindData(giftMsgInfo);
-                        sendGift();
-                        sendTextMsg(text,ProfileInfoCustom.GIFT_MSG);
-                    }
-                };
-                dialog=new GiftSendDialog(WatcherActivity.this,R.style.custom_dialog,listener);
-                dialog.show();
+//                GiftSendDialog.onGiftSendListener listener = new GiftSendDialog.onGiftSendListener() {
+//                    @Override
+//                    public void onSend(GiftInfo info) {
+//                        selectedGift = info;
+//                        String text = ProfileInfoCustom.TYPE_GIFT + "送了一个" + info.getGiftName();
+//                        item = giftView.getAvailableDanMuView();
+//                        GiftMsgInfo giftMsgInfo = new GiftMsgInfo();
+//                        giftMsgInfo.setInfo(info);
+//                        item.bindData(giftMsgInfo);
+//                        sendGift();
+//                        sendTextMsg(text,ProfileInfoCustom.GIFT_MSG);
+//                    }
+//                };
+//                dialog=new GiftSendDialog(WatcherActivity.this,R.style.custom_dialog/*,listener*/);
+//                dialog.show();
 
             }
         });
@@ -188,22 +179,22 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
         });
     }
 
-    private void sendGift() {
-        if (firstSendTime == 0) {
-            item.setIsRepeat(false);
-            firstSendTime = System.currentTimeMillis();
-            handler.sendEmptyMessage(FIRST_SEND_GIFT);
-            item.setVisibility(View.VISIBLE);
-            item.startAnimtion();
-        } else {
-            item.setIsRepeat(true);
-            item.repeatSend();
-            handler.removeMessages(FIRST_SEND_GIFT);
-            handler.removeMessages(REPEAT_SEND_GIFT);
-            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
-            repeatTimeLimit = 10;
-        }
-    }
+//    private void sendGift() {
+//        if (firstSendTime == 0) {
+//            item.setIsRepeat(false);
+//            firstSendTime = System.currentTimeMillis();
+//            handler.sendEmptyMessage(FIRST_SEND_GIFT);
+//            item.setVisibility(View.VISIBLE);
+//            item.startAnimtion();
+//        } else {
+//            item.setIsRepeat(true);
+//            item.repeatSend();
+//            handler.removeMessages(FIRST_SEND_GIFT);
+//            handler.removeMessages(REPEAT_SEND_GIFT);
+//            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
+//            repeatTimeLimit = 10;
+//        }
+//    }
 
     private void sendTextMsg(final String msg, final int options) {
         List<String> ids = new ArrayList<>();
@@ -254,6 +245,12 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
                     danmuView.addDanMu(dmMsgInfo);
                     info.setText(newmsg);
                 }
+//                if (options==ProfileInfoCustom.GIFT_MSG){
+//                    String newMsg =msg.substring(ProfileInfoCustom.TYPE_GIFT.length(),msg.length());
+//                    info.setText(newMsg);
+//
+//                }
+
                 lmlv.addMsg(info);
             }
 
@@ -291,7 +288,7 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
                 option, new ILiveCallBack() {
                     @Override
                     public void onSuccess(Object data) {
-                        //成功的时候怎么办
+                        //TODO 增加观众数量
 
                     }
 
@@ -306,20 +303,18 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
     }
 
     private void initView() {
+//        giftView =findViewById(R.id.mGv_watcher);
         mAv_watcher = findViewById(R.id.mAv_watcher);
         bsl = findViewById(R.id.bsl);
         bcl = findViewById(R.id.bcl);
         lmlv = findViewById(R.id.lmlv);
         mHrl = findViewById(R.id.mHrl);
         danmuView = findViewById(R.id.mDv_watch);
-
-
-
         bsl.mImg_bsl_gift.setVisibility(View.VISIBLE);
-
     }
 
     @Override
+
     protected void onPause() {
         super.onPause();
         ILVLiveManager.getInstance().onPause();
@@ -363,7 +358,13 @@ public class WatcherActivity extends AppCompatActivity implements ILVLiveConfig.
             info.setLiveId(SenderId);
             danmuView.addDanMu(info);
 
-        } else {
+        }
+//        else if (msg.startsWith(ProfileInfoCustom.TYPE_GIFT)){
+//            item=giftView.getAvailableDanMuView();
+//             sendGift();
+//        }
+
+        else {
             liveMsgInfo.setText(msg);
         }
         lmlv.addMsg(liveMsgInfo);

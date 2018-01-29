@@ -33,7 +33,7 @@
         android:id="@+id/mBcl_host_live"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="true"
 
         />
 
@@ -43,10 +43,16 @@
         android:layout_height="150dp"
         android:layout_above="@id/mBcl_host_live" />
 
+    <!--<com.example.coco.liveproject.widget.gift.GiftView
+        android:id="@+id/mGv_host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/mLmlv_host_live" />-->
+
     <com.example.coco.liveproject.widget.danmu.DanmuView
         android:id="@+id/mDv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:layout_above="@id/mLmlv_host_live" />
+        android:layout_above="@id/mLmlv_host_live"
+        android:layout_marginBottom="50dp" />
 </com.example.coco.liveproject.widget.widget.HeightRelativeLayout>

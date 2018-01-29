@@ -29,10 +29,16 @@
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_above="@id/bsl" />
+
     <com.example.coco.liveproject.widget.danmu.DanmuView
+        android:id="@+id/mDv_watch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/lmlv"
-        android:id="@+id/mDv_watch"
-        />
+        android:layout_above="@id/lmlv" />
+
+    <!--<com.example.coco.liveproject.widget.gift.GiftView
+        android:id="@+id/mGv_watcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/lmlv" />-->
 </com.example.coco.liveproject.widget.widget.HeightRelativeLayout>

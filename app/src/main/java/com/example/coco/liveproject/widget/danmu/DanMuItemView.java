@@ -40,9 +40,11 @@ public class DanMuItemView extends FrameLayout {
 
     private void init() {
         View view = inflater.inflate(R.layout.danmu_item_view, this, true);
+
         mImg_danmu_headImg = view.findViewById(R.id.mImg_danmu_headImg);
         mTv_danmu_liveid = view.findViewById(R.id.mTv_danmu_liveid);
         mTv_danmu_msg = view.findViewById(R.id.mTv_danmu_msg);
+
         setDefault();
     }
 

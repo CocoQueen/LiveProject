@@ -5,93 +5,145 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.Display;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
+import com.example.coco.liveproject.bean.GiftInfo;
+import com.example.coco.liveproject.bean.GiftMsgInfo;
+import com.example.coco.liveproject.widget.danmu.DanMuItemView;
+import com.example.coco.liveproject.widget.gift.GiftFullView;
 import com.example.coco.liveproject.widget.gift.GiftItem;
+import com.example.coco.liveproject.widget.gift.GiftSendDialog;
 
 /**
  * Created by coco on 2018/1/19.
  */
 
 public class Test extends Activity {
-    private static final  int FIRST_SEND_GIFT=-1;
-    private static final  int REPEAT_SEND_GIFT=1;
+    private static final int FIRST_GIFT_SEND_FLAG = -1;
+    public static final int REPEAT_GIFT_SEND_FLAG =1 ;
     private int repeatTimeLimit=10;
 
-    Handler handler=new Handler(){
+    long firstSendTimeMillion;
+
+    Handler repeatGiftTimer=new Handler(){
         @Override
         public void handleMessage(Message msg) {
-
             switch (msg.what){
-                case FIRST_SEND_GIFT:
+                case FIRST_GIFT_SEND_FLAG:
                     if (repeatTimeLimit>0){
                         repeatTimeLimit--;
-                        sendEmptyMessageDelayed(FIRST_SEND_GIFT,80);
-                        //TODO 点击按钮发送礼物
-                        mBtn.setText("发送"+repeatTimeLimit);
-                    }else {
-                        item.setIsRepeat(false);
-                        firstSendTime = 0;
+                        sendEmptyMessageDelayed(FIRST_GIFT_SEND_FLAG,80);
+                        giftSendDialog.setSendButtonText("发送（"+repeatTimeLimit+")");
+                    }else{
+                        giftItem.setIsRepeat(false);
+                        firstSendTimeMillion=0;
                         repeatTimeLimit=10;
-                        //TODO mbtn
-                        mBtn.setText("发送");
+                        giftSendDialog.setSendButtonText("发送");
                     }
+
                     break;
-                case REPEAT_SEND_GIFT:
+
+                case REPEAT_GIFT_SEND_FLAG:
+
+
                     if (repeatTimeLimit>0){
                         repeatTimeLimit--;
-                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT,80);
-                        //TODO mbtn
-                        mBtn.setText("发送"+repeatTimeLimit);
-                    }else {
-                        item.setIsRepeat(false);
-                        item.repeatSendWithoutAddNum();
-                        firstSendTime=0;
+                        sendEmptyMessageDelayed(REPEAT_GIFT_SEND_FLAG,80);
+                        giftSendDialog.setSendButtonText("发送（"+repeatTimeLimit+")");
+
+                    }else{
+                        giftItem.setIsRepeat(false);
+                        giftItem.repeatSendWithoutAddNum();
+                        firstSendTimeMillion=0;
                         repeatTimeLimit=10;
-                        //TODO mbtn
-                        mBtn.setText("发送");
+                        giftSendDialog.setSendButtonText("发送");
                     }
+
+
                     break;
-                    default:
-                        super.handleMessage(msg);
-                        break;
+                default:
+                    super.handleMessage(msg);
+                    break;
             }
+
+
+
         }
     };
-    private GiftItem item;
-    private long firstSendTime;
-    private Button mBtn;
+
+    private DanMuItemView dd;
+    private GiftItem giftItem;
+    private GiftSendDialog giftSendDialog;
+    private GiftFullView view;
+    private GiftSendDialog.onGiftSendListener onGiftSendListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test);
-//
-//        GiftSendDialog dialog = new GiftSendDialog(this, R.style.custom_dialog);
-//        dialog.show();
+        giftItem = findViewById(R.id.giftItem);
+        view = findViewById(R.id.giftFullView);
+        view.setVisibility(View.INVISIBLE);
+        FullGiftViewMatchParent();
 
-        item = findViewById(R.id.giftItem);
-//        item.startAnimtion();
 
-        mBtn = findViewById(R.id.mBtn);
-        mBtn.setOnClickListener(new View.OnClickListener() {
+        onGiftSendListener = new GiftSendDialog.onGiftSendListener() {
             @Override
-            public void onClick(View v) {
-                if (firstSendTime==0){
-                    item.setIsRepeat(false);
-                    firstSendTime=System.currentTimeMillis();
-                    handler.sendEmptyMessage(FIRST_SEND_GIFT);
-                    item.startAnimtion();
-                }else {
-                    item.setIsRepeat(true);
-                    item.repeatSend();
-                    handler.removeMessages(FIRST_SEND_GIFT);
-                    handler.removeMessages(REPEAT_SEND_GIFT);
-                    handler.sendEmptyMessage(REPEAT_SEND_GIFT);
-                    repeatTimeLimit=10;
-                }
+            public void onSend(GiftInfo info) {
+
+                GiftMsgInfo giftMsgInfo = new GiftMsgInfo();
+                giftMsgInfo.setInfo(info);
+               if (info.getType()==GiftInfo.GiftType.Repeat){
+                   giftItem.bindData(giftMsgInfo);
+                   sendGift();
+               }
+               else if (info.getType()==GiftInfo.GiftType.FullScreen){
+                   view.showFullGift(giftMsgInfo);
+               }
+
+
+
             }
-        });
+
+
+        };
+        giftSendDialog = new GiftSendDialog(this, R.style.custom_dialog, onGiftSendListener);
+        giftSendDialog.show();
+
+
+    }
+    public void sendGift(){
+        if (firstSendTimeMillion==0){
+            giftItem.setIsRepeat(false);
+            firstSendTimeMillion=System.currentTimeMillis();
+            repeatGiftTimer.sendEmptyMessage(FIRST_GIFT_SEND_FLAG);
+            giftItem.startAnimte();
+        }
+        else{
+            giftItem.setIsRepeat(true);
+            giftItem.repeatSend();
+            repeatGiftTimer.removeMessages(FIRST_GIFT_SEND_FLAG);
+            repeatGiftTimer.removeMessages(REPEAT_GIFT_SEND_FLAG);
+            repeatGiftTimer.sendEmptyMessage(REPEAT_GIFT_SEND_FLAG);
+            repeatTimeLimit=10;
+        }
+    }
+    private void FullGiftViewMatchParent() {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        WindowManager wm = getWindowManager();
+        Display defaultDisplay = wm.getDefaultDisplay();
+        int width = defaultDisplay.getWidth();
+        int height = defaultDisplay.getHeight();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        view.setLayoutParams(layoutParams);
+    }
+
+    public void showSendGiftDialog(View view) {
+        giftSendDialog = new GiftSendDialog(this, R.style.custom_dialog,onGiftSendListener);
+        giftSendDialog.show();
     }
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <RelativeLayout
+        android:id="@+id/mRl_full_gift"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_bg_gift"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/mImg_sender_full"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/mTv_sender_id_full"
+            android:layout_width="78dp"
+            android:layout_height="25dp"
+            android:layout_alignTop="@+id/mImg_sender_full"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/mImg_sender_full"
+            android:maxLines="1"
+            android:text="adouId:"
+            android:textColor="@color/green"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/mTv_gift_info_full"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mTv_sender_id_full"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@id/mImg_sender_full"
+            android:text="送出了保时捷超跑"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+    <com.example.coco.liveproject.widget.gift.GiftFullItem
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gift_full_item"
+        android:layout_centerInParent="true"
+        />
+
+</RelativeLayout>

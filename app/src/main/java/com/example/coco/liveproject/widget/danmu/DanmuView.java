@@ -44,33 +44,39 @@ public class DanmuView extends LinearLayout {
 
     private void init() {
         View view = inflater.inflate(R.layout.danmu_view, this, true);
+
         mDan_item = view.findViewById(R.id.mDan_item);
         mDan_item2 = view.findViewById(R.id.mDan_item2);
+
         setDefault();
+
         WindowManager manager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
         screenWidth = display.getWidth();
     }
 
     private void setDefault() {
+        setOrientation(VERTICAL);
         mDan_item.setVisibility(INVISIBLE);
         mDan_item2.setVisibility(INVISIBLE);
     }
 
-    public DanMuItemView getItemView() {
+    public DanMuItemView getAvailableDanMuView() {
         if (mDan_item.getVisibility() == INVISIBLE) {
             return mDan_item;
-        } else if (mDan_item2.getVisibility() == INVISIBLE) {
+        }
+        else if (mDan_item2.getVisibility() == INVISIBLE) {
             return mDan_item2;
-        } else {
+        }
+        else {
             return null;
         }
     }
 
     public void addDanMu(DMMsgInfo info) {
-        DanMuItemView view = getItemView();
-        if (view != null) {
-            startActionAnim(info, view);
+        DanMuItemView availableDanMuView = getAvailableDanMuView();
+        if (availableDanMuView != null) {
+            startActionAnim(info, availableDanMuView);
         } else {
 
             if (list == null) {

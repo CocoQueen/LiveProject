@@ -14,9 +14,9 @@ import com.example.coco.liveproject.bean.LiveMsgInfo;
 import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
 import com.example.coco.liveproject.utils.ToastUtils;
+import com.example.coco.liveproject.widget.danmu.DanmuView;
 import com.example.coco.liveproject.widget.widget.BottomChatLayout;
 import com.example.coco.liveproject.widget.widget.BottomSwichLayout;
-import com.example.coco.liveproject.widget.danmu.DanmuView;
 import com.example.coco.liveproject.widget.widget.HeightRelativeLayout;
 import com.example.coco.liveproject.widget.widget.LiveMsgListView;
 import com.tencent.TIMFriendshipManager;
@@ -48,6 +48,45 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
     private String sendserId;
     private LiveMsgInfo info;
     private DanmuView danmuView;
+
+//    private static final int FIRST_SEND_GIFT = -1;
+//    private static final int REPEAT_SEND_GIFT = 1;
+//    private int repeatTimeLimit = 10;
+//    private long firstSendTime;
+//    GiftItem item;
+//    private GiftView mGv_host;
+
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case FIRST_SEND_GIFT:
+//                    if (repeatTimeLimit > 0) {
+//                        repeatTimeLimit--;
+//                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
+//                    } else {
+//                        item.setIsRepeat(false);
+//                        firstSendTime = 0;
+//                        repeatTimeLimit = 10;
+//                    }
+//                    break;
+//                case REPEAT_SEND_GIFT:
+//                    if (repeatTimeLimit > 0) {
+//                        repeatTimeLimit--;
+//                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
+//                    } else {
+//                        item.setIsRepeat(false);
+//                        item.repeatSendWithoutAddNum();
+//                        firstSendTime = 0;
+//                        repeatTimeLimit = 10;
+//                    }
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +167,8 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
                 if (TextUtils.isEmpty(sendserId)) {
                     sendserId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
                 }
-                String newMsg = ProfileInfoCustom.TYPE_DAN + msg;
-                sendTextMsg(newMsg, sendserId, ProfileInfoCustom.DANMU_MSG);
+//                String newMsg = ProfileInfoCustom.TYPE_DAN + msg;
+                sendTextMsg(msg, sendserId, ProfileInfoCustom.DANMU_MSG);
 
             }
         });
@@ -225,6 +264,7 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
         mBcl_host_live = findViewById(R.id.mBcl_host_live);
         mLmlv_host_live = findViewById(R.id.mLmlv_host_live);
         danmuView = findViewById(R.id.mDv);
+//        mGv_host = findViewById(R.id.mGv_host);
 
         mBsl_host_live.mImg_bsl_gift.setVisibility(View.INVISIBLE);
         ILVLiveManager.getInstance().setAvVideoView(mAv_room);//添加avrootview
@@ -289,7 +329,15 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
             danmuView.addDanMu(dmMsgInfo);
 
 
-        } else {
+        }
+//        else if (msg.startsWith(ProfileInfoCustom.TYPE_GIFT)){
+//            item=mGv_host.getItemView();
+//            sendGift();
+//            String newmsg = msg.substring(ProfileInfoCustom.TYPE_GIFT.length(), msg.length());
+//            info=new LiveMsgInfo(Integer.parseInt(grade),nickName,newmsg,SenderId);
+//        }
+
+        else {
             info = new LiveMsgInfo(Integer.parseInt(grade), nickName, msg, SenderId);
         }
         mLmlv_host_live.addMsg(info);
@@ -305,4 +353,20 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
     public void onNewOtherMsg(TIMMessage message) {
 
     }
+//    private void sendGift() {
+//        if (firstSendTime == 0) {
+//            item.setIsRepeat(false);
+//            firstSendTime = System.currentTimeMillis();
+//            handler.sendEmptyMessage(FIRST_SEND_GIFT);
+//            item.setVisibility(View.VISIBLE);
+//            item.startAnimte();
+//        } else {
+//            item.setIsRepeat(true);
+//            item.repeatSend();
+//            handler.removeMessages(FIRST_SEND_GIFT);
+//            handler.removeMessages(REPEAT_SEND_GIFT);
+//            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
+//            repeatTimeLimit = 10;
+//        }
+//    }
 }

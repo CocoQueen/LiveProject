@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.example.coco.liveproject.R;
 import com.example.coco.liveproject.bean.GiftInfo;
+import com.example.coco.liveproject.utils.ToastUtils;
 
 import java.util.ArrayList;
 
@@ -26,26 +27,36 @@ import java.util.ArrayList;
  */
 
 public class GiftSendDialog {
+    private static final String TAG = "GiftSendDialog";
+
     Activity activity;
     private final Dialog dialog;
-    ArrayList<GiftGridView> gridViewList = new ArrayList<>();
-    ArrayList<GiftInfo> allList = new ArrayList<>();
+
     private WindowManager manager;
     private Display display;
+
     private LayoutInflater inflater;
     private View view;
+
     private ViewPager mVp_gift;
     private ImageView mImg_indicator0;
     private ImageView mImg_indicator1;
-    private Button mBtn_send_gift;
-    private GiftGridView.SetGiftDefaultListener defaultListener;
-    private GiftInfo giftInfo;
+    public Button mBtn_send_gift;
     private GiftGridView gridView;
     private GiftGridView gridView2;
+
+    private GiftGridView.SetGiftDefaultListener defaultListener;
+    private onGiftSendListener listener;
+
+    private GiftInfo selectedGift;
+
     private ArrayList<GiftInfo> gifts1;
     private ArrayList<GiftInfo> gifts2;
+    ArrayList<GiftGridView> gridViewList = new ArrayList<>();
+    ArrayList<GiftInfo> allList = new ArrayList<>();
+
     private GiftViewPagerAdapter adapter;
-    private onGiftSendListener listener;
+    private long preClickTime;
 
     public GiftSendDialog(Activity activity,onGiftSendListener listener) {
         this.activity = activity;
@@ -102,10 +113,13 @@ public class GiftSendDialog {
 
     private void initView() {
         initAllGift();
+
         manager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         display = manager.getDefaultDisplay();
+
         inflater = LayoutInflater.from(activity);
         view = inflater.inflate(R.layout.dialog_send_gift, null, false);
+
         mVp_gift = view.findViewById(R.id.mVp_gift);
         mImg_indicator0 = view.findViewById(R.id.mImg_indicator0);
         mImg_indicator1 = view.findViewById(R.id.mImg_indicator1);
@@ -114,14 +128,21 @@ public class GiftSendDialog {
         mBtn_send_gift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener!=null){
-                    listener.onSend(giftInfo);
+
+                if (System.currentTimeMillis()-preClickTime>50){
+                   if (listener!=null){
+                       listener.onSend(selectedGift);
+                   }
+                }else {
+                    ToastUtils.show("点击太快了");
                 }
+                preClickTime=System.currentTimeMillis();
             }
         });
         initGridView();
 
         dialog.setContentView(view);
+
         Window window = dialog.getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
         params.width = display.getWidth();
@@ -135,7 +156,7 @@ public class GiftSendDialog {
         defaultListener = new GiftGridView.SetGiftDefaultListener() {
             @Override
             public void setOnSelected(GiftInfo info) {
-                giftInfo = info;
+                selectedGift = info;
                 gridView.setGiftSelected(info);
                 gridView2.setGiftSelected(info);
 
@@ -143,7 +164,7 @@ public class GiftSendDialog {
 
             @Override
             public void setOnUnSelected(GiftInfo info) {
-                    giftInfo=null;
+                    selectedGift =null;
             }
         };
         gifts1 = new ArrayList<>();
@@ -155,6 +176,7 @@ public class GiftSendDialog {
 
         gridView = new GiftGridView(activity,defaultListener);
         gridView.setGiftData(gifts1);
+
         gridView2 = new GiftGridView(activity,defaultListener);
         gridView2.setGiftData(gifts2);
 

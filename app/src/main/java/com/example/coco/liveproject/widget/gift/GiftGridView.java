@@ -21,9 +21,13 @@ import java.util.ArrayList;
  */
 
 public class GiftGridView extends GridView {
+    private static final String TAG = "GiftGridView";
+
     ArrayList<GiftInfo> list = new ArrayList<>();
+
     private LayoutInflater inflater;
     private GiftAdapter adapter;
+
     SetGiftDefaultListener listener;
 
     public GiftGridView(Context context, SetGiftDefaultListener listener) {
@@ -41,7 +45,6 @@ public class GiftGridView extends GridView {
 
     private void init() {
         setNumColumns(4);
-
         adapter = new GiftAdapter();
         setAdapter(adapter);
 
@@ -59,11 +62,11 @@ public class GiftGridView extends GridView {
     }
 
     public void setGiftSelected(GiftInfo info) {
-        for (GiftInfo giftInfo : list) {
-            if (giftInfo.getGiftId() == info.getGiftId()) {
-                giftInfo.setSelected(true);
+        for (GiftInfo g : list) {
+            if (g.getGiftId() == info.getGiftId()) {
+                g.setSelected(true);
             } else {
-                giftInfo.setSelected(false);
+                g.setSelected(false);
             }
             adapter.notifyDataSetChanged();
         }
@@ -100,6 +103,8 @@ public class GiftGridView extends GridView {
                 public void onClick(View v) {
                     if (gInfo.isSelected()){
                         gInfo.setSelected(false);
+                        listener.setOnUnSelected(gInfo);
+                        adapter.notifyDataSetChanged();
                     }else {
                     listener.setOnSelected(gInfo);
                     }
