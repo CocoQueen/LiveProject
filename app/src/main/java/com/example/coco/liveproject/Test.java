@@ -1,6 +1,7 @@
 package com.example.coco.liveproject;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,12 @@ import com.example.coco.liveproject.widget.danmu.DanMuItemView;
 import com.example.coco.liveproject.widget.gift.GiftFullView;
 import com.example.coco.liveproject.widget.gift.GiftItem;
 import com.example.coco.liveproject.widget.gift.GiftSendDialog;
+
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import tyrantgit.widget.HeartLayout;
 
 /**
  * Created by coco on 2018/1/19.
@@ -79,17 +86,31 @@ public class Test extends Activity {
     private GiftSendDialog giftSendDialog;
     private GiftFullView view;
     private GiftSendDialog.onGiftSendListener onGiftSendListener;
+    private HeartLayout heart;
+    Random random = new Random();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test);
+
         giftItem = findViewById(R.id.giftItem);
         view = findViewById(R.id.giftFullView);
+        heart = findViewById(R.id.mHeart);
+
         view.setVisibility(View.INVISIBLE);
         FullGiftViewMatchParent();
-
-
+      new Timer().schedule(new TimerTask() {
+          @Override
+          public void run() {
+             heart.post(new Runnable() {
+                 @Override
+                 public void run() {
+                     heart.addHeart(color(),R.drawable.heart,R.drawable.heart_border);
+                 }
+             });
+          }
+      },0,1000);
         onGiftSendListener = new GiftSendDialog.onGiftSendListener() {
             @Override
             public void onSend(GiftInfo info) {
@@ -101,17 +122,16 @@ public class Test extends Activity {
                    sendGift();
                }
                else if (info.getType()==GiftInfo.GiftType.FullScreen){
+
                    view.showFullGift(giftMsgInfo);
+
                }
-
-
-
             }
 
 
         };
-        giftSendDialog = new GiftSendDialog(this, R.style.custom_dialog, onGiftSendListener);
-        giftSendDialog.show();
+//        giftSendDialog = new GiftSendDialog(this, R.style.custom_dialog, onGiftSendListener);
+//        giftSendDialog.show();
 
 
     }
@@ -145,5 +165,10 @@ public class Test extends Activity {
     public void showSendGiftDialog(View view) {
         giftSendDialog = new GiftSendDialog(this, R.style.custom_dialog,onGiftSendListener);
         giftSendDialog.show();
+    }
+
+    private int color(){
+        int rgb = Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        return rgb;
     }
 }

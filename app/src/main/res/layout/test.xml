@@ -20,6 +20,14 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         />
+    <tyrantgit.widget.HeartLayout
+        android:id="@+id/mHeart"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="150dp"
+        android:layout_height="match_parent">
+
+    </tyrantgit.widget.HeartLayout>
 
 
 </RelativeLayout>
