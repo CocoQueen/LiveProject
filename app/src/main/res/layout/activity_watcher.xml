@@ -36,9 +36,23 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/lmlv" />
 
-    <!--<com.example.coco.liveproject.widget.gift.GiftView
+    <com.example.coco.liveproject.widget.gift.GiftView
         android:id="@+id/mGv_watcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/lmlv" />-->
+        android:layout_above="@id/lmlv" />
+    <com.example.coco.liveproject.widget.gift.GiftFullView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mGfv_watcher"
+        />
+
+    <tyrantgit.widget.HeartLayout
+        android:id="@+id/mHeart"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bsl"
+        android:layout_alignParentEnd="true" />
+
+
 </com.example.coco.liveproject.widget.widget.HeightRelativeLayout>

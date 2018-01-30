@@ -37,7 +37,7 @@
             android:layout_below="@+id/mTv_sender_id_full"
             android:layout_margin="5dp"
             android:layout_toRightOf="@id/mImg_sender_full"
-            android:text="送出了保时捷超跑"
+            android:text="送出了超跑"
             android:textColor="@color/gray"
             android:textSize="14sp" />
 

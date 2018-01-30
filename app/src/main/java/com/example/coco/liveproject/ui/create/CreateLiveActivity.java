@@ -81,7 +81,7 @@ public class CreateLiveActivity extends AppCompatActivity implements CreateLiveC
                 presenter.createLive(coverUrl,title);
                 break;
             case R.id.mImg_live_cover:
-                showPicSelect();
+//                showPicSelect();
                 break;
         }
     }

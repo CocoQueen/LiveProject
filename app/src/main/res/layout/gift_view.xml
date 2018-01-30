@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.coco.liveproject.widget.gift.GiftView
+    <com.example.coco.liveproject.widget.gift.GiftItem
         android:id="@+id/mGift_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.coco.liveproject.widget.gift.GiftView
+    <com.example.coco.liveproject.widget.gift.GiftItem
         android:id="@+id/mGift_item2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

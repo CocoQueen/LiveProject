@@ -31,19 +31,19 @@ public class CreateLivePresenterImpl implements CreateLiveContract.CreateLivePre
     @Override
     public void createLive(String url, String liveName) {
 
-        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(liveName)) {
+        if (/*TextUtils.isEmpty(url) ||*/ TextUtils.isEmpty(liveName)) {
             view.onCreateFail();
         } else {
             //创建房间
             //先把房间名称、封面、主播id、主播昵称、主播头像（application中有缓存）
             //传给服务器，服务器返回信息中包含roomid
-            requestRoomId(url, liveName);
+            requestRoomId(/*url,*/ liveName);
         }
 
     }
 
     //获取房间id
-    private void requestRoomId(String cover, String liveName) {
+    private void requestRoomId(/*String cover,*/ String liveName) {
         HashMap<String, String> map = new HashMap<>();
         UserProfile profile = LiveApplication.getApp().getUserProfile();
         TIMUserProfile profile1 = profile.getProfile();
@@ -53,7 +53,7 @@ public class CreateLivePresenterImpl implements CreateLiveContract.CreateLivePre
         map.put("userAvatar", profile1.getFaceUrl());
         map.put("userName", profile1.getNickName());
         map.put("liveTitle", liveName);
-        map.put("liveCover", cover);
+//        map.put("liveCover", cover);
 
         OkHttpHelper.getInstance().postObject(AppConstant.HOST,map,new BaseOnRequestComplete<HostRoomInfo>(){
 

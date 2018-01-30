@@ -43,11 +43,11 @@
         android:layout_height="150dp"
         android:layout_above="@id/mBcl_host_live" />
 
-    <!--<com.example.coco.liveproject.widget.gift.GiftView
+    <com.example.coco.liveproject.widget.gift.GiftView
         android:id="@+id/mGv_host"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/mLmlv_host_live" />-->
+        android:layout_above="@id/mLmlv_host_live" />
 
     <com.example.coco.liveproject.widget.danmu.DanmuView
         android:id="@+id/mDv"

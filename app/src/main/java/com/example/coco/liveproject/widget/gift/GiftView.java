@@ -17,23 +17,20 @@ import java.util.LinkedList;
  */
 
 public class GiftView extends LinearLayout {
-
-
     private LayoutInflater inflater;
     private GiftItem mGift_item;
     private GiftItem mGift_item2;
-
     LinkedList<GiftMsgInfo> list;
 
     public GiftView(Context context) {
         super(context);
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(getContext());
         init();
     }
 
     public GiftView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(getContext());
         init();
     }
 
@@ -42,7 +39,6 @@ public class GiftView extends LinearLayout {
         mGift_item = view.findViewById(R.id.mGift_item);
         mGift_item2 = view.findViewById(R.id.mGift_item2);
         setDefault();
-
     }
 
     private void setDefault() {
@@ -57,15 +53,15 @@ public class GiftView extends LinearLayout {
 //        } else if (mGift_item2.getVisibility() == INVISIBLE) {
 //            return mGift_item2;
 //        } else {
-            return mGift_item;
+        return mGift_item;
 //        }
     }
 
-    public void addGift(GiftMsgInfo info,onGiftViewListener listener) {
+    public void addGift(GiftMsgInfo info, onGiftViewListener listener) {
         GiftItem item = getItemView();
         if (item != null) {
-            if (listener!=null){
-            listener.onSetListener(item);
+            if (listener != null) {
+                listener.onSetListener(item);
             }
         } else {
             if (list == null) {
@@ -76,16 +72,14 @@ public class GiftView extends LinearLayout {
     }
 
 
-
     private void showCacheMsg(GiftItem view) {
         if (list != null && !list.isEmpty()) {
             GiftMsgInfo info = list.removeFirst();
 //            startActionAnim(info, view);
         }
-
-
     }
-    public interface onGiftViewListener{
+
+    public interface onGiftViewListener {
         void onSetListener(GiftItem item);
     }
 }

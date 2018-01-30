@@ -2,6 +2,8 @@ package com.example.coco.liveproject.ui.host;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -15,6 +17,8 @@ import com.example.coco.liveproject.custom.ProfileInfoCustom;
 import com.example.coco.liveproject.model.MessageObservable;
 import com.example.coco.liveproject.utils.ToastUtils;
 import com.example.coco.liveproject.widget.danmu.DanmuView;
+import com.example.coco.liveproject.widget.gift.GiftItem;
+import com.example.coco.liveproject.widget.gift.GiftView;
 import com.example.coco.liveproject.widget.widget.BottomChatLayout;
 import com.example.coco.liveproject.widget.widget.BottomSwichLayout;
 import com.example.coco.liveproject.widget.widget.HeightRelativeLayout;
@@ -34,10 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HostLiveActivity extends AppCompatActivity implements HostLiveContract.HostLiveView, ILVLiveConfig.ILVLiveMsgListener {
-
     private Toolbar mTool_host;
     private AVRootView mAv_room;
-
     private int roomId;
     private HostLiveContract.HostLivePresenter presenter;
     private BottomSwichLayout mBsl_host_live;
@@ -48,53 +50,51 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
     private String sendserId;
     private LiveMsgInfo info;
     private DanmuView danmuView;
+    private static final int FIRST_SEND_GIFT = -1;
+    private static final int REPEAT_SEND_GIFT = 1;
+    private int repeatTimeLimit = 10;
+    private long firstSendTime;
+    GiftItem item;
+    private GiftView mGv_host;
 
-//    private static final int FIRST_SEND_GIFT = -1;
-//    private static final int REPEAT_SEND_GIFT = 1;
-//    private int repeatTimeLimit = 10;
-//    private long firstSendTime;
-//    GiftItem item;
-//    private GiftView mGv_host;
-
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case FIRST_SEND_GIFT:
-//                    if (repeatTimeLimit > 0) {
-//                        repeatTimeLimit--;
-//                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
-//                    } else {
-//                        item.setIsRepeat(false);
-//                        firstSendTime = 0;
-//                        repeatTimeLimit = 10;
-//                    }
-//                    break;
-//                case REPEAT_SEND_GIFT:
-//                    if (repeatTimeLimit > 0) {
-//                        repeatTimeLimit--;
-//                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
-//                    } else {
-//                        item.setIsRepeat(false);
-//                        item.repeatSendWithoutAddNum();
-//                        firstSendTime = 0;
-//                        repeatTimeLimit = 10;
-//                    }
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case FIRST_SEND_GIFT:
+                    if (repeatTimeLimit > 0) {
+                        repeatTimeLimit--;
+                        sendEmptyMessageDelayed(FIRST_SEND_GIFT, 80);
+                    } else {
+                        item.setIsRepeat(false);
+                        firstSendTime = 0;
+                        repeatTimeLimit = 10;
+                    }
+                    break;
+                case REPEAT_SEND_GIFT:
+                    if (repeatTimeLimit > 0) {
+                        repeatTimeLimit--;
+                        sendEmptyMessageDelayed(REPEAT_SEND_GIFT, 80);
+                    } else {
+                        item.setIsRepeat(false);
+                        item.repeatSendWithoutAddNum();
+                        firstSendTime = 0;
+                        repeatTimeLimit = 10;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host_live);
-
-        MessageObservable.getInstance().addObserver(this);
         initView();
+        MessageObservable.getInstance().addObserver(this);
         mLmlv_host_live.setData(list);
         setBottomSwichListener();
         setDefaultStatus();
@@ -167,9 +167,8 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
                 if (TextUtils.isEmpty(sendserId)) {
                     sendserId = LiveApplication.getApp().getUserProfile().getProfile().getIdentifier();
                 }
-//                String newMsg = ProfileInfoCustom.TYPE_DAN + msg;
-                sendTextMsg(msg, sendserId, ProfileInfoCustom.DANMU_MSG);
-
+                String newMsg = ProfileInfoCustom.TYPE_DAN + msg;
+                sendTextMsg(newMsg, sendserId, ProfileInfoCustom.DANMU_MSG);
             }
         });
     }
@@ -186,10 +185,8 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
             @Override
             public void onSuccess(List<TIMUserProfile> timUserProfiles) {
                 realSend(timUserProfiles, msg, options);
-
             }
         });
-
     }
 
     private void realSend(List<TIMUserProfile> timUserProfiles, final String msg, final int options) {
@@ -231,17 +228,13 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
                     dmMsgInfo.setText(newMsg);
                     danmuView.addDanMu(dmMsgInfo);
                     info.setText(newMsg);
-
-
                 }
-
                 mLmlv_host_live.addMsg(info);
             }
 
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 ToastUtils.show("发送失败" + errMsg + errCode);
-
             }
         });
     }
@@ -258,14 +251,12 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
     private void initView() {
         mTool_host = findViewById(R.id.mTool_host);
         mAv_room = findViewById(R.id.mAv_room);
-
         mHcl_host_live = findViewById(R.id.mHcl_host_live);
         mBsl_host_live = findViewById(R.id.mBsl_host_live);
         mBcl_host_live = findViewById(R.id.mBcl_host_live);
         mLmlv_host_live = findViewById(R.id.mLmlv_host_live);
         danmuView = findViewById(R.id.mDv);
-//        mGv_host = findViewById(R.id.mGv_host);
-
+        mGv_host = findViewById(R.id.mGv_host);
         mBsl_host_live.mImg_bsl_gift.setVisibility(View.INVISIBLE);
         ILVLiveManager.getInstance().setAvVideoView(mAv_room);//添加avrootview
     }
@@ -300,7 +291,6 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
             @Override
             public void onError(String module, int errCode, String errMsg) {
                 ToastUtils.show("退出直播失败" + errMsg + errCode);
-
             }
         });
     }
@@ -327,21 +317,18 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
             dmMsgInfo.setAvatar(headImg);
             dmMsgInfo.setLiveId(SenderId);
             danmuView.addDanMu(dmMsgInfo);
-
-
         }
-//        else if (msg.startsWith(ProfileInfoCustom.TYPE_GIFT)){
-//            item=mGv_host.getItemView();
-//            sendGift();
-//            String newmsg = msg.substring(ProfileInfoCustom.TYPE_GIFT.length(), msg.length());
-//            info=new LiveMsgInfo(Integer.parseInt(grade),nickName,newmsg,SenderId);
-//        }
+        else if (msg.startsWith(ProfileInfoCustom.TYPE_GIFT)){
+            item=mGv_host.getItemView();
+            sendGift();
+            String newmsg = msg.substring(ProfileInfoCustom.TYPE_GIFT.length(), msg.length());
+            info=new LiveMsgInfo(Integer.parseInt(grade),nickName,newmsg,SenderId);
+        }
 
         else {
             info = new LiveMsgInfo(Integer.parseInt(grade), nickName, msg, SenderId);
         }
         mLmlv_host_live.addMsg(info);
-
     }
 
     @Override
@@ -353,20 +340,20 @@ public class HostLiveActivity extends AppCompatActivity implements HostLiveContr
     public void onNewOtherMsg(TIMMessage message) {
 
     }
-//    private void sendGift() {
-//        if (firstSendTime == 0) {
-//            item.setIsRepeat(false);
-//            firstSendTime = System.currentTimeMillis();
-//            handler.sendEmptyMessage(FIRST_SEND_GIFT);
-//            item.setVisibility(View.VISIBLE);
-//            item.startAnimte();
-//        } else {
-//            item.setIsRepeat(true);
-//            item.repeatSend();
-//            handler.removeMessages(FIRST_SEND_GIFT);
-//            handler.removeMessages(REPEAT_SEND_GIFT);
-//            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
-//            repeatTimeLimit = 10;
-//        }
-//    }
+    private void sendGift() {
+        if (firstSendTime == 0) {
+            item.setIsRepeat(false);
+            firstSendTime = System.currentTimeMillis();
+            handler.sendEmptyMessage(FIRST_SEND_GIFT);
+            item.setVisibility(View.VISIBLE);
+            item.startAnimte();
+        } else {
+            item.setIsRepeat(true);
+            item.repeatSend();
+            handler.removeMessages(FIRST_SEND_GIFT);
+            handler.removeMessages(REPEAT_SEND_GIFT);
+            handler.sendEmptyMessage(REPEAT_SEND_GIFT);
+            repeatTimeLimit = 10;
+        }
+    }
 }
